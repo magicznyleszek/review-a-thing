@@ -15,8 +15,6 @@ a {
 
 a:hover { color: var(--c-jade); }
 
-a:visited { color: inherit; }
-
 a:active { color: var(--c-deepSkyBlue); }
 
 /* text selection */
