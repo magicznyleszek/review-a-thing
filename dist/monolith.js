@@ -5,7 +5,7 @@
 // productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', ['tabsModule']);
+angular.module('productReviewAppModule', ['titleModule', 'tabsModule']);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -461,6 +461,89 @@ var TabsMenuCtrl = function () {
 TabsMenuCtrl.initClass();
 
 angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuCtrl);
+'use strict';
+
+// -----------------------------------------------------------------------------
+// titleModule is for displaying a title.
+// -----------------------------------------------------------------------------
+
+angular.module('titleModule', ['stateModule', 'urlParamsModule']);
+
+angular.module('titleModule').run(['title', angular.noop]);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// title is a service for connecting url param with state.
+// -----------------------------------------------------------------------------
+
+var TitleService = function () {
+    _createClass(TitleService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            TitleService.$inject = ['state', 'urlParams'];
+        }
+    }]);
+
+    function TitleService(state, urlParams) {
+        _classCallCheck(this, TitleService);
+
+        // set initial title state from url params
+        state.setParam('title', urlParams.getParam('product'));
+    }
+
+    return TitleService;
+}();
+
+TitleService.initClass();
+
+angular.module('titleModule').service('title', TitleService);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// titleCtrl -- handles displaying a title.
+// -----------------------------------------------------------------------------
+
+var TitleCtrl = function () {
+    _createClass(TitleCtrl, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            TitleCtrl.$inject = ['state'];
+        }
+    }]);
+
+    function TitleCtrl(state) {
+        _classCallCheck(this, TitleCtrl);
+
+        this._state = state;
+        this._state.registerStateObserver(this._onStateChange.bind(this));
+
+        this.text = null;
+
+        // get initial state
+        this._onStateChange();
+    }
+
+    _createClass(TitleCtrl, [{
+        key: '_onStateChange',
+        value: function _onStateChange() {
+            this.text = this._state.getParam('title');
+        }
+    }]);
+
+    return TitleCtrl;
+}();
+
+TitleCtrl.initClass();
+
+angular.module('titleModule').controller('titleCtrl', TitleCtrl);
 'use strict';
 
 // -----------------------------------------------------------------------------

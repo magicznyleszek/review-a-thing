@@ -3,5 +3,6 @@
 // -----------------------------------------------------------------------------
 
 angular.module('productReviewAppModule', [
+    'titleModule',
     'tabsModule'
 ]);
