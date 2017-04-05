@@ -3,3 +3,10 @@
 // -----------------------------------------------------------------------------
 
 angular.module('urlParamsModule', []);
+
+angular.module('urlParamsModule').config(($locationProvider) => {
+    $locationProvider.html5Mode({
+        enabled: true,
+        requireBase: false
+    });
+});
