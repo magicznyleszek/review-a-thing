@@ -1,0 +1,54 @@
+/*******************************************************************************
+card module
+*******************************************************************************/
+
+:root {
+    --card-sh-a-sizes: 0 0 0 0.0625rem;
+    --card-sh-b-sizes: 0 0.2rem 0.3rem 0;
+
+    --c-card-default: var(--c-seaweed);
+    --card-sh-default:
+        var(--card-sh-a-sizes) color(var(--c-card-default) alpha(15%)),
+        var(--card-sh-b-sizes) color(var(--c-card-default) alpha(10%));
+    --card-sh-default-hover:
+        var(--card-sh-a-sizes) color(var(--c-card-default) alpha(25%)),
+        var(--card-sh-b-sizes) color(var(--c-card-default) alpha(15%));
+
+    --c-card-error: var(--c-eggplant);
+    --card-sh-error:
+        var(--card-sh-a-sizes) color(var(--c-card-error) alpha(15%)),
+        var(--card-sh-b-sizes) color(var(--c-card-error) alpha(10%));
+}
+
+[i-card] {
+    display: block;
+    position: relative;
+    margin: calc(var(--s-leading) * 0.5) auto;
+    border-radius: var(--s-global-br);
+    padding: calc(var(--s-leading) * 0.5);
+    width: auto;
+    box-shadow: var(--card-sh-default);
+    background-color: var(--c-white);
+    color: var(--c-card-default);
+}
+
+[i-card~="error"] {
+    box-shadow: var(--card-sh-error);
+    color: var(--c-card-error);
+}
+
+/*******************************************************************************
+clickable styles (detected by having ngClick)
+*******************************************************************************/
+
+[i-card][ng-click] {
+    cursor: pointer;
+}
+
+[i-card][ng-click]:not([disabled]):hover {
+    box-shadow: var(--card-sh-default-hover);
+}
+
+[i-card][ng-click]:not([disabled]):active {
+    left: calc(var(--s-leading) * 0.5);
+}

@@ -1,0 +1,12 @@
+## TEAM
+
+Everything: Leszek Pietrzak
+Site: smutnyleszek.com
+Email: smutnyleszek@gmail.com
+Location: Warsaw, Poland
+
+## SITE
+
+Last update: 04/2017
+Language: English
+Software: Atom

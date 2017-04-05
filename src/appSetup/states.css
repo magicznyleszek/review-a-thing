@@ -1,0 +1,45 @@
+/*******************************************************************************
+user-action influenced states
+*******************************************************************************/
+
+[ng-cloak] {
+    display: none !important;
+}
+
+/* links */
+
+a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+a:hover { color: var(--c-jade); }
+
+a:visited { color: inherit; }
+
+a:active { color: var(--c-deepSkyBlue); }
+
+/* text selection */
+
+:focus {
+    outline-color: var(--c-jade);
+    outline-style: auto;
+    outline-width: 0.25rem;
+}
+
+::-moz-focus-inner { border: 0; }
+
+::selection {
+    background-color: var(--c-jade);
+    color: var(--c-white);
+}
+
+/* disabled elements */
+
+[disabled] {
+    pointer-events: none;
+    opacity: 0.5;
+
+    /* avoid adding up opacity on nested disabled elements */
+    [disabled] { opacity: 1; }
+}

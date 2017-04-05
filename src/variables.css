@@ -1,0 +1,72 @@
+/*******************************************************************************
+variables - all global and pallete variables for project
+*******************************************************************************/
+
+:root {
+    /* colors palette */
+    --c-white: hsl(0, 0%, 100%);
+    --c-celeste: hsl(100, 6%, 80%);
+    --c-seaweed: hsl(100, 47%, 13%);
+    --c-jade: hsl(160, 100%, 35%);
+    --c-deepSkyBlue: hsl(200, 96%, 55%);
+    --c-eggplant: hsl(320, 100%, 30%);
+
+    /* font families palette */
+    --font-sansSerif:
+        "Source Sans Pro",
+        "Roboto",
+        "PT Sans",
+        "Droid Sans",
+        "Fira Sans",
+        "Work Sans",
+        "Open Sans",
+        "Noto Sans",
+        "Hind",
+        "Dosis",
+        "Cabin",
+        "Verdana",
+        "Tahoma",
+        sans-serif;
+    --font-monospace:
+        "Input Mono",
+        "Office Code Pro",
+        "Source Code Pro",
+        "Fira Mono",
+        "Inconsolata",
+        "Monaco",
+        "Consolas",
+        "Lucida Console",
+        "Liberation Mono",
+        "DejaVu Sans Mono",
+        monospace;
+
+    /* base */
+    --c-root-txt: var(--c-seaweed);
+    --c-root-bg: var(--c-white);
+    --s-root-content: 40rem; /* 640px @ 16px */
+
+    /* root typography */
+    --root-fontWeight: 400;
+    --root-lineHeight: 1.5;
+    --root-fontFamily: var(--font-sansSerif);
+
+    /* font sizes with respect to user browser default sizes */
+    --root-fontSize-medium: 112.5%; /* probably 18px */
+    --root-fontSize-smaller: 100%; /* probably 16px */
+    --root-fontSize-bigger: 125%; /* probably 20px */
+
+    /* leading size for all spacing between elements to be pretty */
+    --s-leading: calc(var(--root-lineHeight) * 1rem);
+
+    /* globals */
+    --s-global-br: 0.125rem;
+}
+
+/*******************************************************************************
+custom media queries and selectors shortcuts
+*******************************************************************************/
+
+/* media queries for scaling everything */
+@custom-media --bigger (min-width: 1536px);
+@custom-media --medium (min-width: 721px) and (max-width: 1535px);
+@custom-media --smaller (max-width: 720px);
