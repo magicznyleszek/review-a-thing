@@ -43,7 +43,7 @@ describe('state', () => {
         expect(_.isEqual(expectedState, currentState)).toBeTruthy();
     });
 
-    it('should return unmutable objects', () => {
+    it('should return immutable objects', () => {
         state.setParam('foo', {bar: 2});
         const stateOne = state.get();
 

@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
-// productReviewAppModule is our single ngApp module for whole web app
+// tabsModule is for displaying and managing tabs.
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', [
-    'tabsModule'
+angular.module('tabsModule', [
+    'stateModule'
 ]);

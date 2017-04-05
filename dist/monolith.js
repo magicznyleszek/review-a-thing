@@ -5,7 +5,7 @@
 // productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', []);
+angular.module('productReviewAppModule', ['tabsModule']);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -271,6 +271,196 @@ var StateService = function () {
 StateService.initClass();
 
 angular.module('stateModule').service('state', StateService);
+'use strict';
+
+// -----------------------------------------------------------------------------
+// tabsModule is for displaying and managing tabs.
+// -----------------------------------------------------------------------------
+
+angular.module('tabsModule', ['stateModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// tabs is a service for changing current and unlocking tabs.
+// -----------------------------------------------------------------------------
+
+var TabsService = function () {
+    _createClass(TabsService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            TabsService.initialTabsState = [{
+                id: 's1',
+                name: 'Step 1',
+                isUnlocked: false,
+                isVisible: false
+            }, {
+                id: 's2',
+                name: 'Step 2',
+                isUnlocked: false,
+                isVisible: false
+            }, {
+                id: 's3',
+                name: 'Step 3',
+                isUnlocked: false,
+                isVisible: false
+            }];
+
+            TabsService.$inject = ['state'];
+        }
+    }]);
+
+    function TabsService(state) {
+        _classCallCheck(this, TabsService);
+
+        this._state = state;
+        // set initial tabs state
+        this._state.setParam('tabs', TabsService.initialTabsState);
+    }
+
+    _createClass(TabsService, [{
+        key: 'hideTab',
+        value: function hideTab(tabId) {
+            this._changeTabProperty(tabId, 'isVisible', false);
+        }
+    }, {
+        key: 'showTab',
+        value: function showTab(tabId) {
+            this._changeTabProperty(tabId, 'isVisible', true);
+        }
+    }, {
+        key: 'lockTab',
+        value: function lockTab(tabId) {
+            this._changeTabProperty(tabId, 'isUnlocked', false);
+        }
+    }, {
+        key: 'unlockTab',
+        value: function unlockTab(tabId) {
+            this._changeTabProperty(tabId, 'isUnlocked', true);
+        }
+    }, {
+        key: '_changeTabProperty',
+        value: function _changeTabProperty(tabId, propertyName, propertyValue) {
+            var currentState = this._state.get();
+            var tabsData = currentState.tabs;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = tabsData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var tab = _step.value;
+
+                    if (tab.id === tabId) {
+                        tab[propertyName] = propertyValue;
+                        break;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            this._state.setParam('tabs', tabsData);
+        }
+    }]);
+
+    return TabsService;
+}();
+
+TabsService.initClass();
+
+angular.module('tabsModule').service('tabs', TabsService);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// tabsCtrl -- handles displaying tabs and changing current tab.
+// -----------------------------------------------------------------------------
+
+var TabsMenuCtrl = function () {
+    _createClass(TabsMenuCtrl, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            TabsMenuCtrl.$inject = ['state', 'tabs'];
+        }
+    }]);
+
+    function TabsMenuCtrl(state, tabs) {
+        _classCallCheck(this, TabsMenuCtrl);
+
+        this._state = state;
+        this._tabs = tabs;
+
+        this._state.registerStateObserver(this._onStateChange.bind(this));
+
+        this.options = {};
+
+        // get initial state
+        this._onStateChange();
+    }
+
+    _createClass(TabsMenuCtrl, [{
+        key: '_onStateChange',
+        value: function _onStateChange() {
+            this.options = this._state.getParam('tabs');
+        }
+    }, {
+        key: 'showTab',
+        value: function showTab(tabId) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = this.options[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var tab = _step.value;
+
+                    if (tab.id === tabId) {
+                        this._tabs.showTab(tab.id);
+                    } else {
+                        this._tabs.hideTab(tab.id);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    }]);
+
+    return TabsMenuCtrl;
+}();
+
+TabsMenuCtrl.initClass();
+
+angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuCtrl);
 'use strict';
 
 // -----------------------------------------------------------------------------
