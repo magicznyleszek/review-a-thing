@@ -2,7 +2,7 @@
 // tweak default angular configuration
 // -----------------------------------------------------------------------------
 
-angular.module('reviewAppModule').config([
+angular.module('productReviewAppModule').config([
     '$interpolateProvider',
     '$compileProvider',
     (

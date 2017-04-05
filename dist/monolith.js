@@ -2,17 +2,17 @@
 'use strict';
 
 // -----------------------------------------------------------------------------
-// reviewAppModule is our single ngApp module for whole web app
+// productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('reviewAppModule', []);
+angular.module('productReviewAppModule', []);
 'use strict';
 
 // -----------------------------------------------------------------------------
 // tweak default angular configuration
 // -----------------------------------------------------------------------------
 
-angular.module('reviewAppModule').config(['$interpolateProvider', '$compileProvider', function ($interpolateProvider, $compileProvider) {
+angular.module('productReviewAppModule').config(['$interpolateProvider', '$compileProvider', function ($interpolateProvider, $compileProvider) {
     // unfortunately we can't use "{{ symbols }}" because Jekyll uses them
     $interpolateProvider.startSymbol('[[');
     $interpolateProvider.endSymbol(']]');
