@@ -3,7 +3,7 @@
         <button
             i-tabsMenu-button
             ng-click="tabsMenu.showTab(tab.id)"
-            ng-bind="tab.name"
+            ng-bind="::tab.name"
             ng-disabled="!tab.isUnlocked"
         ></button>
     </div>
