@@ -219,7 +219,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// state is a service that keeps state data (user input and other stuff).
+// state is a service that keeps global state data (user input and other stuff).
 // -----------------------------------------------------------------------------
 
 var StateService = function () {
@@ -251,7 +251,12 @@ var StateService = function () {
     }, {
         key: 'getParam',
         value: function getParam(paramName) {
-            return _.cloneDeep(this._state[paramName]);
+            var stateParam = this._state[paramName];
+            if (typeof stateParam === 'undefined') {
+                return null;
+            } else {
+                return _.cloneDeep(this._state[paramName]);
+            }
         }
     }, {
         key: 'get',

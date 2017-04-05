@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// state is a service that keeps state data (user input and other stuff).
+// state is a service that keeps global state data (user input and other stuff).
 // -----------------------------------------------------------------------------
 
 class StateService {
@@ -22,7 +22,12 @@ class StateService {
     }
 
     getParam(paramName) {
-        return _.cloneDeep(this._state[paramName]);
+        const stateParam = this._state[paramName];
+        if (typeof stateParam === 'undefined') {
+            return null;
+        } else {
+            return _.cloneDeep(this._state[paramName]);
+        }
     }
 
     get() {

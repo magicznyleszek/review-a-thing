@@ -14,6 +14,10 @@ describe('state', () => {
         expect(state.getParam('conan')).toBe('barbarian');
     });
 
+    it('should return null for nonexistent param', () => {
+        expect(state.getParam('ufo')).toBe(null);
+    });
+
     it('should be able to set/get an object param', () => {
         const testValue = {barbarian: true, swordsCount: 1};
         const testName = 'conan';
