@@ -1,8 +1,10 @@
-<menu ng-controller="tabsMenuCtrl as tabsMenu">
-    <button
-        ng-repeat="tab in tabsMenu.options track by tab.id"
-        ng-click="tabsMenu.showTab(tab.id)"
-        ng-bind="tab.name"
-        ng-disabled="!tab.isUnlocked"
-    ></button>
+<menu i-card i-tabsMenu ng-controller="tabsMenuCtrl as tabsMenu">
+    <div i-tabsMenu-item ng-repeat="tab in tabsMenu.options track by tab.id">
+        <button
+            i-tabsMenu-button
+            ng-click="tabsMenu.showTab(tab.id)"
+            ng-bind="tab.name"
+            ng-disabled="!tab.isUnlocked"
+        ></button>
+    </div>
 </menu>

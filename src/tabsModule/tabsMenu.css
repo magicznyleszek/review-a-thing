@@ -1,0 +1,34 @@
+/*******************************************************************************
+tabsMenu module
+*******************************************************************************/
+
+[i-tabsMenu] {
+    text-align: center;
+}
+
+[i-tabsMenu-item] {
+    display: inline-block;
+}
+
+[i-tabsMenu-item]:not(:first-of-type)::before {
+    content: "\2192";
+    float: left;
+    margin: 0 2rem;
+}
+
+[i-tabsMenu-button] {
+    cursor: pointer;
+    background: transparent;
+}
+
+[i-tabsMenu-button]:not([disabled]) {
+    color: var(--c-jade);
+}
+
+[i-tabsMenu-button]:hover {
+    color: color(var(--c-jade) shade(10%));
+}
+
+[i-tabsMenu-button]:active {
+    color: color(var(--c-jade) shade(20%));
+}
