@@ -205,4 +205,53 @@ var ObservableModel = function () {
 angular.module('observableModule').factory('Observable', function () {
     return ObservableModel;
 });
+'use strict';
+
+// -----------------------------------------------------------------------------
+// urlParamsModule is for reading search params from url.
+// -----------------------------------------------------------------------------
+
+angular.module('urlParamsModule', []);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// urlParams reads window location search params
+// -----------------------------------------------------------------------------
+
+var UrlParamsService = function () {
+    _createClass(UrlParamsService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            UrlParamsService.$inject = ['$location'];
+        }
+    }]);
+
+    function UrlParamsService($location) {
+        _classCallCheck(this, UrlParamsService);
+
+        this._$location = $location;
+    }
+
+    _createClass(UrlParamsService, [{
+        key: 'getParam',
+        value: function getParam(paramName) {
+            var searchParams = this._$location.search();
+            if (typeof searchParams[paramName] === 'undefined') {
+                return null;
+            } else {
+                return searchParams[paramName];
+            }
+        }
+    }]);
+
+    return UrlParamsService;
+}();
+
+UrlParamsService.initClass();
+
+angular.module('urlParamsModule').service('urlParams', UrlParamsService);
 })();
