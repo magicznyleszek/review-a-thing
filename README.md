@@ -1,4 +1,4 @@
-![coverage-shield-badge-1](https://img.shields.io/badge/coverage-95.92%25-brightgreen.svg)
+![coverage-shield-badge-1](https://img.shields.io/badge/coverage-95%25-brightgreen.svg)
 
 # Review a Thing (tm)
 
@@ -35,8 +35,6 @@ What you want is to basically have two terminals:
 
 ## TODO
 
-- a module for reading location search parameters
-- a "state module" for keeping user input data and steps unlockage
 - tabbed content module
 - steps navigation module (next button)
 - product title module

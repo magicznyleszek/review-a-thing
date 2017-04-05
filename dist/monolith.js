@@ -208,6 +208,67 @@ angular.module('observableModule').factory('Observable', function () {
 'use strict';
 
 // -----------------------------------------------------------------------------
+// stateModule keeps all the app data.
+// -----------------------------------------------------------------------------
+
+angular.module('stateModule', ['observableModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// state is a service that keeps state data (user input and other stuff).
+// -----------------------------------------------------------------------------
+
+var StateService = function () {
+    _createClass(StateService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            StateService.$inject = ['Observable'];
+        }
+    }]);
+
+    function StateService(Observable) {
+        _classCallCheck(this, StateService);
+
+        this._state = {};
+        this._stateObservable = new Observable();
+    }
+
+    _createClass(StateService, [{
+        key: 'registerStateObserver',
+        value: function registerStateObserver(observer) {
+            return this._stateObservable.register(observer);
+        }
+    }, {
+        key: 'setParam',
+        value: function setParam(paramName, paramValue) {
+            this._state[paramName] = paramValue;
+            this._stateObservable.notify();
+        }
+    }, {
+        key: 'getParam',
+        value: function getParam(paramName) {
+            return _.cloneDeep(this._state[paramName]);
+        }
+    }, {
+        key: 'get',
+        value: function get() {
+            return _.cloneDeep(this._state);
+        }
+    }]);
+
+    return StateService;
+}();
+
+StateService.initClass();
+
+angular.module('stateModule').service('state', StateService);
+'use strict';
+
+// -----------------------------------------------------------------------------
 // urlParamsModule is for reading search params from url.
 // -----------------------------------------------------------------------------
 
