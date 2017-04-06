@@ -2,9 +2,9 @@
 // tabsCtrl -- handles displaying tabs and changing current tab.
 // -----------------------------------------------------------------------------
 
-class TabsMenuCtrl {
+class TabsMenuController {
     static initClass() {
-        TabsMenuCtrl.$inject = ['state', 'tabs'];
+        TabsMenuController.$inject = ['state', 'tabs'];
     }
 
     constructor(state, tabs) {
@@ -34,6 +34,6 @@ class TabsMenuCtrl {
     }
 }
 
-TabsMenuCtrl.initClass();
+TabsMenuController.initClass();
 
-angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuCtrl);
+angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuController);

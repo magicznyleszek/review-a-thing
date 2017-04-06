@@ -1,0 +1,20 @@
+<div i-card="error">
+    Some required fields are not filled up!
+</div>
+
+<div i-card ng-controller="reviewFormCtrl as reviewForm">
+    <h1>User data and product review</h1>
+
+    <label>
+        <span>Your name</span>
+
+        <input
+            type="text"
+            placeholder=""
+            ng-model="searchBox.phrase"
+            ng-change="searchBox.onSearchPhraseChanged()"
+            ng-focus="searchBox.onFocus()"
+            ng-blur="searchBox.onBlur()"
+        >
+    </label>
+</div>

@@ -6,7 +6,7 @@ card module
     --card-sh-a-sizes: 0 0 0 0.0625rem;
     --card-sh-b-sizes: 0 0.2rem 0.3rem 0;
 
-    --c-card-default: var(--c-seaweed);
+    --c-card-default: var(--c-watercourse);
     --card-sh-default:
         var(--card-sh-a-sizes) color(var(--c-card-default) alpha(15%)),
         var(--card-sh-b-sizes) color(var(--c-card-default) alpha(10%));
@@ -14,7 +14,7 @@ card module
         var(--card-sh-a-sizes) color(var(--c-card-default) alpha(25%)),
         var(--card-sh-b-sizes) color(var(--c-card-default) alpha(15%));
 
-    --c-card-error: var(--c-eggplant);
+    --c-card-error: var(--c-rose);
     --card-sh-error:
         var(--card-sh-a-sizes) color(var(--c-card-error) alpha(15%)),
         var(--card-sh-b-sizes) color(var(--c-card-error) alpha(10%));
@@ -28,7 +28,7 @@ card module
     padding: calc(var(--s-leading) * 0.5);
     width: auto;
     box-shadow: var(--card-sh-default);
-    background-color: var(--c-white);
+    background-color: var(--c-iceberg);
     color: var(--c-card-default);
 }
 

@@ -3,20 +3,18 @@ area module - colors
 *******************************************************************************/
 
 [i-area~="jade"] { background-color: var(--c-jade); }
-[i-area~="white"] { background-color: var(--c-white); }
-[i-area~="celeste"] { background-color: var(--c-celeste); }
-[i-area~="seaweed"] { background-color: var(--c-seaweed); }
+[i-area~="iceberg"] { background-color: var(--c-iceberg); }
+[i-area~="watercourse"] { background-color: var(--c-watercourse); }
 
 /* text color for light backgrounds */
-[i-area~="white"],
-[i-area~="celeste"] {
-    color: var(--c-seaweed);
+[i-area~="iceberg"] {
+    color: var(--c-watercourse);
 }
 
 /* text color for dark backgrounds */
-[i-area~="seaweed"],
+[i-area~="watercourse"],
 [i-area~="jade"] {
-    color: var(--c-white);
+    color: var(--c-iceberg);
 }
 
 /*******************************************************************************

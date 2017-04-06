@@ -4,12 +4,11 @@ variables - all global and pallete variables for project
 
 :root {
     /* colors palette */
-    --c-white: hsl(0, 0%, 100%);
-    --c-celeste: hsl(100, 6%, 80%);
-    --c-seaweed: hsl(100, 47%, 13%);
+    --c-iceberg: hsl(160, 50%, 90%);
+    --c-watercourse: hsl(160, 90%, 20%);
     --c-jade: hsl(160, 100%, 35%);
     --c-deepSkyBlue: hsl(200, 96%, 55%);
-    --c-eggplant: hsl(320, 100%, 30%);
+    --c-rose: hsl(330, 100%, 50%);
 
     /* font families palette */
     --font-sansSerif:
@@ -41,8 +40,8 @@ variables - all global and pallete variables for project
         monospace;
 
     /* base */
-    --c-root-txt: var(--c-seaweed);
-    --c-root-bg: var(--c-white);
+    --c-root-txt: var(--c-watercourse);
+    --c-root-bg: var(--c-iceberg);
     --s-root-content: 40rem; /* 640px @ 16px */
 
     /* root typography */

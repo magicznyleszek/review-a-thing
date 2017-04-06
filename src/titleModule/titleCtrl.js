@@ -2,9 +2,9 @@
 // titleCtrl -- handles displaying a title.
 // -----------------------------------------------------------------------------
 
-class TitleCtrl {
+class TitleController {
     static initClass() {
-        TitleCtrl.$inject = ['state'];
+        TitleController.$inject = ['state'];
     }
 
     constructor(state) {
@@ -22,6 +22,6 @@ class TitleCtrl {
     }
 }
 
-TitleCtrl.initClass();
+TitleController.initClass();
 
-angular.module('titleModule').controller('titleCtrl', TitleCtrl);
+angular.module('titleModule').controller('titleCtrl', TitleController);

@@ -35,10 +35,8 @@ What you want is to basically have two terminals:
 
 ## TODO
 
-- tabbed content module
+- tabs content in main module?
 - steps navigation module (next button)
-- product title module
 - review form module (text inputs, text area, stars radios, error message)
-- input validator module (input value vs rules)
 - social form module (checkboxes)
 - preview-publish module (user data display, publish button, success message)

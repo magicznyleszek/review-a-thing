@@ -5,7 +5,7 @@
 // productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', ['titleModule', 'tabsModule']);
+angular.module('productReviewAppModule', ['titleModule', 'tabsModule', 'reviewFormModule']);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -208,6 +208,43 @@ angular.module('observableModule').factory('Observable', function () {
 'use strict';
 
 // -----------------------------------------------------------------------------
+// reviewFormModule is for managing review form inputs.
+// -----------------------------------------------------------------------------
+
+angular.module('reviewFormModule', ['validatorModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// reviewFormCtrl -- handles displaying inputs and updating the values.
+// -----------------------------------------------------------------------------
+
+var ReviewFormController = function () {
+    _createClass(ReviewFormController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            ReviewFormController.$inject = [];
+        }
+    }]);
+
+    function ReviewFormController() {
+        _classCallCheck(this, ReviewFormController);
+
+        this.hi = true;
+    }
+
+    return ReviewFormController;
+}();
+
+ReviewFormController.initClass();
+
+angular.module('reviewFormModule').controller('reviewFormCtrl', ReviewFormController);
+'use strict';
+
+// -----------------------------------------------------------------------------
 // stateModule keeps all the app data.
 // -----------------------------------------------------------------------------
 
@@ -394,16 +431,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // tabsCtrl -- handles displaying tabs and changing current tab.
 // -----------------------------------------------------------------------------
 
-var TabsMenuCtrl = function () {
-    _createClass(TabsMenuCtrl, null, [{
+var TabsMenuController = function () {
+    _createClass(TabsMenuController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TabsMenuCtrl.$inject = ['state', 'tabs'];
+            TabsMenuController.$inject = ['state', 'tabs'];
         }
     }]);
 
-    function TabsMenuCtrl(state, tabs) {
-        _classCallCheck(this, TabsMenuCtrl);
+    function TabsMenuController(state, tabs) {
+        _classCallCheck(this, TabsMenuController);
 
         this._state = state;
         this._tabs = tabs;
@@ -416,7 +453,7 @@ var TabsMenuCtrl = function () {
         this._onStateChange();
     }
 
-    _createClass(TabsMenuCtrl, [{
+    _createClass(TabsMenuController, [{
         key: '_onStateChange',
         value: function _onStateChange() {
             this.options = this._state.getParam('tabs');
@@ -455,12 +492,12 @@ var TabsMenuCtrl = function () {
         }
     }]);
 
-    return TabsMenuCtrl;
+    return TabsMenuController;
 }();
 
-TabsMenuCtrl.initClass();
+TabsMenuController.initClass();
 
-angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuCtrl);
+angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuController);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -511,16 +548,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // titleCtrl -- handles displaying a title.
 // -----------------------------------------------------------------------------
 
-var TitleCtrl = function () {
-    _createClass(TitleCtrl, null, [{
+var TitleController = function () {
+    _createClass(TitleController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TitleCtrl.$inject = ['state'];
+            TitleController.$inject = ['state'];
         }
     }]);
 
-    function TitleCtrl(state) {
-        _classCallCheck(this, TitleCtrl);
+    function TitleController(state) {
+        _classCallCheck(this, TitleController);
 
         this._state = state;
         this._state.registerStateObserver(this._onStateChange.bind(this));
@@ -531,19 +568,19 @@ var TitleCtrl = function () {
         this._onStateChange();
     }
 
-    _createClass(TitleCtrl, [{
+    _createClass(TitleController, [{
         key: '_onStateChange',
         value: function _onStateChange() {
             this.text = this._state.getParam('title');
         }
     }]);
 
-    return TitleCtrl;
+    return TitleController;
 }();
 
-TitleCtrl.initClass();
+TitleController.initClass();
 
-angular.module('titleModule').controller('titleCtrl', TitleCtrl);
+angular.module('titleModule').controller('titleCtrl', TitleController);
 'use strict';
 
 // -----------------------------------------------------------------------------
