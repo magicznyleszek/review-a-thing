@@ -6,9 +6,10 @@ variables - all global and pallete variables for project
     /* colors palette */
     --c-iceberg: hsl(160, 50%, 90%);
     --c-watercourse: hsl(160, 90%, 20%);
+    --c-vanillaIce: hsl(330, 50%, 95%);
+    --c-rose: hsl(330, 100%, 50%);
     --c-jade: hsl(160, 100%, 35%);
     --c-deepSkyBlue: hsl(200, 96%, 55%);
-    --c-rose: hsl(330, 100%, 50%);
 
     /* font families palette */
     --font-sansSerif:

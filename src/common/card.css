@@ -34,6 +34,7 @@ card module
 
 [i-card~="error"] {
     box-shadow: var(--card-sh-error);
+    background-color: var(--c-vanillaIce);
     color: var(--c-card-error);
 }
 
