@@ -83,7 +83,7 @@
         "no-iterator": 1,
         "no-labels": 1,
         "no-lone-blocks": 2,
-        "no-loop-func": 2,
+        "no-loop-func": 1,
         "no-magic-numbers": 0,
         "no-multi-spaces": 1,
         "no-multi-str": 2,

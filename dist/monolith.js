@@ -600,4 +600,50 @@ var UrlParamsService = function () {
 UrlParamsService.initClass();
 
 angular.module('urlParamsModule').service('urlParams', UrlParamsService);
+'use strict';
+
+// -----------------------------------------------------------------------------
+// validatorModule is for validating inputs.
+// -----------------------------------------------------------------------------
+
+angular.module('validatorModule', []);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// validator checks if given input matches the rules.
+// -----------------------------------------------------------------------------
+
+var ValidatorService = function () {
+    function ValidatorService() {
+        _classCallCheck(this, ValidatorService);
+    }
+
+    _createClass(ValidatorService, [{
+        key: 'isNonEmptyString',
+        value: function isNonEmptyString(string) {
+            if (typeof string === 'string') {
+                return string.trim().length > 0;
+            } else {
+                return false;
+            }
+        }
+    }, {
+        key: 'isIntegerInRange',
+        value: function isIntegerInRange(number, min, max) {
+            if (Number.isInteger(number)) {
+                return number >= min && number <= max;
+            } else {
+                return false;
+            }
+        }
+    }]);
+
+    return ValidatorService;
+}();
+
+angular.module('validatorModule').service('validator', ValidatorService);
 })();
