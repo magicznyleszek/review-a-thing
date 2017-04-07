@@ -83,7 +83,8 @@ class TextFieldController {
         }
         textFieldsData[this.name] = {
             value: this.value,
-            isValid: this.isValid
+            isValid: this.isValid,
+            isRequired: this.isRequired
         };
         this._state.setParam('textFields', textFieldsData);
     }

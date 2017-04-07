@@ -17,8 +17,10 @@ class StateService {
     }
 
     setParam(paramName, paramValue) {
-        this._state[paramName] = paramValue;
-        this._stateObservable.notify();
+        if (!_.isEqual(this._state[paramName], paramValue)) {
+            this._state[paramName] = paramValue;
+            this._stateObservable.notify();
+        }
     }
 
     getParam(paramName) {

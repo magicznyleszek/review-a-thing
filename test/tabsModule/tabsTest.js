@@ -34,14 +34,14 @@ describe('tabs', () => {
         expect(currentState.tabs[0].isVisible).toBeTruthy();
     });
 
-    it('should update state properly with hideTab', () => {
+    it('should update state properly with hideTabs', () => {
         let currentState = state.get();
 
         tabs.showTab(currentState.tabs[0].id);
         currentState = state.get();
         expect(currentState.tabs[0].isVisible).toBeTruthy();
 
-        tabs.hideTab(currentState.tabs[0].id);
+        tabs.hideTabs();
         currentState = state.get();
         expect(currentState.tabs[0].isVisible).toBeFalsy();
     });

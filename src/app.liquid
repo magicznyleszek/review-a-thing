@@ -7,7 +7,19 @@
 
     {% include tabsModule/tabsMenu.liquid %}
 
-    {% include reviewFormModule/reviewForm.liquid %}
+    <div ng-controller="tabsContentCtrl as tabsContent">
+        <div ng-show="tabsContent.areTabsVisible.s1">
+            {% include reviewFormModule/reviewForm.liquid %}
+        </div>
+
+        <div ng-show="tabsContent.areTabsVisible.s2">
+            step 2 content
+        </div>
+
+        <div ng-show="tabsContent.areTabsVisible.s3">
+            step 3 content
+        </div>
+    </div>
 
     <footer i-text="centered">
         <a href="{{site.rootSiteUrl}}">made by leszek</a>

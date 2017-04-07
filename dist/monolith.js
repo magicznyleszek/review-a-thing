@@ -111,7 +111,8 @@ var TextFieldController = function () {
             }
             textFieldsData[this.name] = {
                 value: this.value,
-                isValid: this.isValid
+                isValid: this.isValid,
+                isRequired: this.isRequired
             };
             this._state.setParam('textFields', textFieldsData);
         }
@@ -325,7 +326,65 @@ angular.module('observableModule').factory('Observable', function () {
 // reviewFormModule is for managing review form inputs.
 // -----------------------------------------------------------------------------
 
-angular.module('reviewFormModule', ['fieldsModule']);
+angular.module('reviewFormModule', ['fieldsModule', 'tabsModule']);
+
+angular.module('reviewFormModule').run(['reviewFormChecker', angular.noop]);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// reviewFormChecker is a service for managing first tab state.
+// -----------------------------------------------------------------------------
+
+var ReviewFormCheckerService = function () {
+    _createClass(ReviewFormCheckerService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            ReviewFormCheckerService.tabId = 's1';
+            ReviewFormCheckerService.nextTabId = 's2';
+            ReviewFormCheckerService.$inject = ['state', 'tabs'];
+        }
+    }]);
+
+    function ReviewFormCheckerService(state, tabs) {
+        _classCallCheck(this, ReviewFormCheckerService);
+
+        this._state = state;
+        this._tabs = tabs;
+
+        this._state.registerStateObserver(this._onStateChange.bind(this));
+        // get initial state
+        this._onStateChange();
+
+        // show first tab
+        this._tabs.showTab(ReviewFormCheckerService.tabId);
+    }
+
+    _createClass(ReviewFormCheckerService, [{
+        key: '_onStateChange',
+        value: function _onStateChange() {
+            var textFieldsState = this._state.getParam('textFields');
+
+            if (textFieldsState !== null) {
+                this._tabs.unlockTab(ReviewFormCheckerService.tabId);
+                if (typeof textFieldsState.yourName !== 'undefined' && textFieldsState.yourName.isValid === true && typeof textFieldsState.review !== 'undefined' && textFieldsState.review.isValid === true) {
+                    this._tabs.unlockTab(ReviewFormCheckerService.nextTabId);
+                } else {
+                    this._tabs.lockTab(ReviewFormCheckerService.nextTabId);
+                }
+            }
+        }
+    }]);
+
+    return ReviewFormCheckerService;
+}();
+
+ReviewFormCheckerService.initClass();
+
+angular.module('reviewFormModule').service('reviewFormChecker', ReviewFormCheckerService);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -340,6 +399,7 @@ var ReviewFormErrorController = function () {
     _createClass(ReviewFormErrorController, null, [{
         key: 'initClass',
         value: function initClass() {
+            ReviewFormErrorController.tabId = 's1';
             ReviewFormErrorController.$inject = ['state'];
         }
     }]);
@@ -357,16 +417,46 @@ var ReviewFormErrorController = function () {
     _createClass(ReviewFormErrorController, [{
         key: '_onStateChange',
         value: function _onStateChange() {
-            var textFieldsState = this._state.getParam('textFields');
+            var tabsState = this._state.getParam('tabs');
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
 
+            try {
+                for (var _iterator = tabsState[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var tab = _step.value;
+
+                    if (tab.id === ReviewFormErrorController.tabId) {
+                        if (!tab.isUnlocked) {
+                            return;
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            var textFieldsState = this._state.getParam('textFields');
+            this.isVisible = false;
             if (textFieldsState !== null) {
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
+                var _iteratorNormalCompletion2 = true;
+                var _didIteratorError2 = false;
+                var _iteratorError2 = undefined;
 
                 try {
-                    for (var _iterator = Object.keys(textFieldsState)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var fieldName = _step.value;
+                    for (var _iterator2 = Object.keys(textFieldsState)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                        var fieldName = _step2.value;
 
                         if (textFieldsState[fieldName].isValid === false) {
                             this.isVisible = true;
@@ -374,16 +464,16 @@ var ReviewFormErrorController = function () {
                         }
                     }
                 } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
+                    _didIteratorError2 = true;
+                    _iteratorError2 = err;
                 } finally {
                     try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
+                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                            _iterator2.return();
                         }
                     } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
+                        if (_didIteratorError2) {
+                            throw _iteratorError2;
                         }
                     }
                 }
@@ -397,6 +487,77 @@ var ReviewFormErrorController = function () {
 ReviewFormErrorController.initClass();
 
 angular.module('reviewFormModule').controller('reviewFormErrorCtrl', ReviewFormErrorController);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// reviewFormNextButtonCtrl -- handles displaying error message.
+// -----------------------------------------------------------------------------
+
+var ReviewFormNextButtonController = function () {
+    _createClass(ReviewFormNextButtonController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            ReviewFormNextButtonController.tabId = 's1';
+            ReviewFormNextButtonController.nextTabId = 's2';
+            ReviewFormNextButtonController.$inject = ['state', 'tabs'];
+        }
+    }]);
+
+    function ReviewFormNextButtonController(state, tabs) {
+        _classCallCheck(this, ReviewFormNextButtonController);
+
+        this._state = state;
+        this._tabs = tabs;
+    }
+
+    _createClass(ReviewFormNextButtonController, [{
+        key: 'tryGoNext',
+        value: function tryGoNext() {
+            this._tabs.unlockTab(ReviewFormNextButtonController.tabId);
+
+            var tabsState = this._state.getParam('tabs');
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = tabsState[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var tab = _step.value;
+
+                    if (tab.id === ReviewFormNextButtonController.nextTabId) {
+                        if (tab.isUnlocked) {
+                            this._tabs.showTab(ReviewFormNextButtonController.nextTabId);
+                        }
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    }]);
+
+    return ReviewFormNextButtonController;
+}();
+
+ReviewFormNextButtonController.initClass();
+
+angular.module('reviewFormModule').controller('reviewFormNextButtonCtrl', ReviewFormNextButtonController);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -437,8 +598,10 @@ var StateService = function () {
     }, {
         key: 'setParam',
         value: function setParam(paramName, paramValue) {
-            this._state[paramName] = paramValue;
-            this._stateObservable.notify();
+            if (!_.isEqual(this._state[paramName], paramValue)) {
+                this._state[paramName] = paramValue;
+                this._stateObservable.notify();
+            }
         }
     }, {
         key: 'getParam',
@@ -514,14 +677,68 @@ var TabsService = function () {
     }
 
     _createClass(TabsService, [{
-        key: 'hideTab',
-        value: function hideTab(tabId) {
-            this._changeTabProperty(tabId, 'isVisible', false);
+        key: 'hideTabs',
+        value: function hideTabs() {
+            var currentState = this._state.get();
+            var tabsData = currentState.tabs;
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = tabsData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var tab = _step.value;
+
+                    this._changeTabProperty(tab.id, 'isVisible', false);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
         }
     }, {
         key: 'showTab',
         value: function showTab(tabId) {
-            this._changeTabProperty(tabId, 'isVisible', true);
+            var currentState = this._state.get();
+            var tabsData = currentState.tabs;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = tabsData[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var tab = _step2.value;
+
+                    if (tab.id === tabId) {
+                        this._changeTabProperty(tab.id, 'isVisible', true);
+                    } else {
+                        this._changeTabProperty(tab.id, 'isVisible', false);
+                    }
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
         }
     }, {
         key: 'lockTab',
@@ -538,13 +755,13 @@ var TabsService = function () {
         value: function _changeTabProperty(tabId, propertyName, propertyValue) {
             var currentState = this._state.get();
             var tabsData = currentState.tabs;
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
+            var _iteratorNormalCompletion3 = true;
+            var _didIteratorError3 = false;
+            var _iteratorError3 = undefined;
 
             try {
-                for (var _iterator = tabsData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var tab = _step.value;
+                for (var _iterator3 = tabsData[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+                    var tab = _step3.value;
 
                     if (tab.id === tabId) {
                         tab[propertyName] = propertyValue;
@@ -552,16 +769,16 @@ var TabsService = function () {
                     }
                 }
             } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
+                _didIteratorError3 = true;
+                _iteratorError3 = err;
             } finally {
                 try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
+                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
+                        _iterator3.return();
                     }
                 } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
+                    if (_didIteratorError3) {
+                        throw _iteratorError3;
                     }
                 }
             }
@@ -583,7 +800,73 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// tabsCtrl -- handles displaying tabs and changing current tab.
+// tabsContentCtrl -- handles displaying tabs content.
+// -----------------------------------------------------------------------------
+
+var TabsContentController = function () {
+    _createClass(TabsContentController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            TabsContentController.$inject = ['state'];
+        }
+    }]);
+
+    function TabsContentController(state) {
+        _classCallCheck(this, TabsContentController);
+
+        this._state = state;
+        this.areTabsVisible = {};
+        this._state.registerStateObserver(this._onStateChange.bind(this));
+        // get initial state
+        this._onStateChange();
+    }
+
+    _createClass(TabsContentController, [{
+        key: '_onStateChange',
+        value: function _onStateChange() {
+            var tabsState = this._state.getParam('tabs');
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = tabsState[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var tab = _step.value;
+
+                    this.areTabsVisible[tab.id] = tab.isVisible;
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+        }
+    }]);
+
+    return TabsContentController;
+}();
+
+TabsContentController.initClass();
+
+angular.module('tabsModule').controller('tabsContentCtrl', TabsContentController);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// tabsMenuCtrl -- handles displaying tabs and changing current tab.
 // -----------------------------------------------------------------------------
 
 var TabsMenuController = function () {
@@ -616,34 +899,7 @@ var TabsMenuController = function () {
     }, {
         key: 'showTab',
         value: function showTab(tabId) {
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = this.options[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var tab = _step.value;
-
-                    if (tab.id === tabId) {
-                        this._tabs.showTab(tab.id);
-                    } else {
-                        this._tabs.hideTab(tab.id);
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+            this._tabs.showTab(tabId);
         }
     }]);
 

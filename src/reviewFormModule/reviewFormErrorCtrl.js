@@ -4,6 +4,7 @@
 
 class ReviewFormErrorController {
     static initClass() {
+        ReviewFormErrorController.tabId = 's1';
         ReviewFormErrorController.$inject = ['state'];
     }
 
@@ -16,8 +17,17 @@ class ReviewFormErrorController {
     }
 
     _onStateChange() {
-        const textFieldsState = this._state.getParam('textFields');
+        const tabsState = this._state.getParam('tabs');
+        for (const tab of tabsState) {
+            if (tab.id === ReviewFormErrorController.tabId) {
+                if (!tab.isUnlocked) {
+                    return;
+                }
+            }
+        }
 
+        const textFieldsState = this._state.getParam('textFields');
+        this.isVisible = false;
         if (textFieldsState !== null) {
             for (const fieldName of Object.keys(textFieldsState)) {
                 if (textFieldsState[fieldName].isValid === false) {

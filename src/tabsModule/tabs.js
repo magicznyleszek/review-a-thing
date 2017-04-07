@@ -34,12 +34,24 @@ class TabsService {
         this._state.setParam('tabs', TabsService.initialTabsState);
     }
 
-    hideTab(tabId) {
-        this._changeTabProperty(tabId, 'isVisible', false);
+    hideTabs() {
+        const currentState = this._state.get();
+        const tabsData = currentState.tabs;
+        for (const tab of tabsData) {
+            this._changeTabProperty(tab.id, 'isVisible', false);
+        }
     }
 
     showTab(tabId) {
-        this._changeTabProperty(tabId, 'isVisible', true);
+        const currentState = this._state.get();
+        const tabsData = currentState.tabs;
+        for (const tab of tabsData) {
+            if (tab.id === tabId) {
+                this._changeTabProperty(tab.id, 'isVisible', true);
+            } else {
+                this._changeTabProperty(tab.id, 'isVisible', false);
+            }
+        }
     }
 
     lockTab(tabId) {

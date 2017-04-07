@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// tabsCtrl -- handles displaying tabs and changing current tab.
+// tabsMenuCtrl -- handles displaying tabs and changing current tab.
 // -----------------------------------------------------------------------------
 
 class TabsMenuController {
@@ -24,13 +24,7 @@ class TabsMenuController {
     }
 
     showTab(tabId) {
-        for (const tab of this.options) {
-            if (tab.id === tabId) {
-                this._tabs.showTab(tab.id);
-            } else {
-                this._tabs.hideTab(tab.id);
-            }
-        }
+        this._tabs.showTab(tabId);
     }
 }
 
