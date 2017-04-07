@@ -12,6 +12,7 @@ app styles aggregation
 
 /* modules */
 @import "common/area.css";
+@import "common/button.css";
 @import "common/card.css";
 @import "common/text.css";
 @import "fieldsModule/textField.css";

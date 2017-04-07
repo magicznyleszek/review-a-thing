@@ -1,0 +1,104 @@
+/*******************************************************************************
+button module
+*******************************************************************************/
+
+:root {
+    --s-button-fontsize: 0.75rem;
+    --s-button-padding: 0.5rem;
+    --s-button-verticalMargin: 0.125rem;
+
+    --c-button-txt: var(--c-watercourse);
+    --c-button-bg: var(--c-jade);
+    --c-button-bg-hover: color(var(--c-button-bg) tint(20%));
+    --button-sh: 0 0.125rem 0 0 color(var(--c-button-bg) shade(15%));
+    --button-sh-hover: 0 0.125rem 0 0 color(var(--c-button-bg) shade(10%));
+}
+
+[i-button] {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0;
+    border: 0;
+    border-radius: var(--s-global-br);
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: var(--s-button-padding);
+    padding-right: var(--s-button-padding);
+    height: auto;
+    /* we want the button to fit into leading size with breathing space */
+    min-height: calc(var(--s-leading) - calc(var(--s-button-verticalMargin) * 2));
+    outline: 0;
+    cursor: pointer;
+    background-image: none;
+    font-size: var(--s-button-fontsize);
+    font-weight: 700;
+    font-family: inherit;
+    /* adjust line-height to adjusted height */
+    line-height: calc(var(--s-leading) - calc(var(--s-button-verticalMargin) * 2));
+    text-align: center;
+    text-decoration: none;
+}
+
+/* default button state */
+[i-button],
+[i-button]:visited {
+    margin-top: var(--s-button-verticalMargin);
+    margin-bottom: var(--s-button-verticalMargin);
+}
+
+[i-button]:not([disabled]):hover,
+[i-button~="hover"]:not([disabled]) {
+    margin-top: var(--s-button-verticalMargin);
+    margin-bottom: var(--s-button-verticalMargin);
+}
+
+[i-button]:not([disabled]):active,
+[i-button~="active"]:not([disabled]) {
+    /* swap margins to make the button look pressed-in */
+    margin-top: calc(var(--s-button-verticalMargin) * 2);
+    margin-bottom: 0;
+    /* remove shadow to make the button look pressed-in */
+    box-shadow: none !important;
+}
+
+[i-button~="middle"] {
+    vertical-align: middle;
+}
+
+/*******************************************************************************
+button colors
+*******************************************************************************/
+
+/* default */
+
+[i-button],
+[i-button]:visited {
+    box-shadow: var(--button-sh);
+    background-color: var(--c-button-bg);
+    color: var(--c-button-txt);
+}
+
+[i-button]:not([disabled]):hover,
+[i-button~="hover"]:not([disabled]) {
+    box-shadow: var(--button-sh-hover);
+    background-color: var(--c-button-bg-hover);
+    color: var(--c-button-txt);
+}
+
+[i-button]:not([disabled]):active,
+[i-button~="active"]:not([disabled]) {
+    background-color: var(--c-button-bg-hover);
+    color: var(--c-button-txt);
+}
+
+/*******************************************************************************
+button sizes
+*******************************************************************************/
+
+[i-button~="double"] {
+    padding-left: calc(var(--s-button-padding) * 2);
+    padding-right: calc(var(--s-button-padding) * 2);
+    min-height: calc(var(--s-leading) * 2 - calc(var(--s-button-verticalMargin) * 2));
+    font-size: calc(var(--s-button-fontsize) * 2);
+    line-height: calc((var(--s-leading) - var(--s-button-verticalMargin)) * 2);
+}
