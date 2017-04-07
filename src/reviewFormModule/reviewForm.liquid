@@ -1,8 +1,12 @@
-<div i-card="error">
+<div
+    i-card="error"
+    ng-controller="reviewFormErrorCtrl as reviewFormError"
+    ng-show="reviewFormError.isVisible"
+>
     You need to fill up all non-optional fields, sorry :-(
 </div>
 
-<div i-card ng-controller="reviewFormCtrl as reviewForm">
+<div i-card>
     <h1>User data and product review</h1>
 
     <text-field label="Your name" name="yourName" required></text-field>

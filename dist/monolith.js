@@ -333,29 +333,70 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// reviewFormCtrl -- handles displaying inputs and updating the values.
+// reviewFormErrorCtrl -- handles displaying error message.
 // -----------------------------------------------------------------------------
 
-var ReviewFormController = function () {
-    _createClass(ReviewFormController, null, [{
+var ReviewFormErrorController = function () {
+    _createClass(ReviewFormErrorController, null, [{
         key: 'initClass',
         value: function initClass() {
-            ReviewFormController.$inject = [];
+            ReviewFormErrorController.$inject = ['state'];
         }
     }]);
 
-    function ReviewFormController() {
-        _classCallCheck(this, ReviewFormController);
+    function ReviewFormErrorController(state) {
+        _classCallCheck(this, ReviewFormErrorController);
 
-        this.hi = true;
+        this._state = state;
+        this.isVisible = false;
+        this._state.registerStateObserver(this._onStateChange.bind(this));
+        // get initial state
+        this._onStateChange();
     }
 
-    return ReviewFormController;
+    _createClass(ReviewFormErrorController, [{
+        key: '_onStateChange',
+        value: function _onStateChange() {
+            var textFieldsState = this._state.getParam('textFields');
+
+            if (textFieldsState !== null) {
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = Object.keys(textFieldsState)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var fieldName = _step.value;
+
+                        if (textFieldsState[fieldName].isValid === false) {
+                            this.isVisible = true;
+                            break;
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+            }
+        }
+    }]);
+
+    return ReviewFormErrorController;
 }();
 
-ReviewFormController.initClass();
+ReviewFormErrorController.initClass();
 
-angular.module('reviewFormModule').controller('reviewFormCtrl', ReviewFormController);
+angular.module('reviewFormModule').controller('reviewFormErrorCtrl', ReviewFormErrorController);
 'use strict';
 
 // -----------------------------------------------------------------------------
