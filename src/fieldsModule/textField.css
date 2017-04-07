@@ -65,6 +65,10 @@ partials
     background-color: color(var(--c-watercourse) alpha(10%));
 }
 
+[i-textField-input~="multiline"] {
+    resize: vertical;
+}
+
 /*******************************************************************************
 placeholder
 *******************************************************************************/

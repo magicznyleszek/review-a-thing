@@ -32,19 +32,35 @@ angular.module('productReviewAppModule').config(['$interpolateProvider', '$compi
 angular.module('fieldsModule', ['validatorModule']);
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// textField component with such attr-options as:
+// - multiline
+// - required
+// - name*
+// - label*
+// -----------------------------------------------------------------------------
 
 var TextFieldController = function () {
     _createClass(TextFieldController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TextFieldController.style = {
-                initial: '',
-                error: 'error',
-                valid: 'valid'
+            TextFieldController.getTemplate = function ($attrs) {
+                var input = '';
+                if (typeof $attrs.multiline === 'string') {
+                    input = '\n                    <textarea\n                        i-textField-input="multiline"\n                        placeholder="[[::$ctrl.label]]"\n                        ng-model="$ctrl.value"\n                        ng-change="$ctrl.onChange()"\n                        ng-blur="$ctrl.onBlur()"\n                        rows="4"\n                    ></textarea>\n                ';
+                } else {
+                    input = '\n                    <input\n                        i-textField-input\n                        placeholder="[[::$ctrl.label]]"\n                        type="text"\n                        ng-model="$ctrl.value"\n                        ng-change="$ctrl.onChange()"\n                        ng-blur="$ctrl.onBlur()"\n                    >\n                ';
+                }
+
+                return '\n                <label i-textField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?\'required\':\'\']]">\n                    ' + input + '\n                </label>\n            ';
             };
+
             TextFieldController.$inject = ['$attrs', 'validator', 'state'];
         }
     }]);
@@ -53,32 +69,54 @@ var TextFieldController = function () {
         _classCallCheck(this, TextFieldController);
 
         this._validator = validator;
+        this._state = state;
 
+        this.label = $attrs.label;
         this.name = $attrs.name;
         this.value = null;
-        this.stateModifier = TextFieldController.style.initial;
         this.isRequired = typeof $attrs.required !== 'undefined';
+        this.isValid = null;
     }
 
     _createClass(TextFieldController, [{
         key: 'onChange',
         value: function onChange() {
-            this._validate();
+            this._verifyValue();
+            this._saveValue();
         }
     }, {
         key: 'onBlur',
         value: function onBlur() {
-            this._validate();
+            this._verifyValue();
+            this._saveValue();
         }
     }, {
-        key: '_validate',
-        value: function _validate() {
+        key: '_verifyValue',
+        value: function _verifyValue() {
             if (this.isRequired) {
-                if (this._validator.isNonEmptyString(this.value)) {
-                    this.stateModifier = TextFieldController.style.valid;
-                } else {
-                    this.stateModifier = TextFieldController.style.error;
-                }
+                this.isValid = this._validator.isNonEmptyString(this.value);
+            }
+        }
+    }, {
+        key: '_saveValue',
+        value: function _saveValue() {
+            var currentState = this._state.get();
+            var textFieldsData = currentState.textFields;
+            if ((typeof textFieldsData === 'undefined' ? 'undefined' : _typeof(textFieldsData)) !== 'object') {
+                textFieldsData = {};
+            }
+            textFieldsData[this.name] = this.value;
+            this._state.setParam('textFields', textFieldsData);
+        }
+    }, {
+        key: 'getValidModifier',
+        value: function getValidModifier() {
+            if (this.isValid === true) {
+                return 'valid';
+            } else if (this.isValid === false) {
+                return 'error';
+            } else {
+                return '';
             }
         }
     }]);
@@ -90,7 +128,7 @@ TextFieldController.initClass();
 
 angular.module('fieldsModule').component('textField', {
     controller: TextFieldController,
-    template: '\n        <label i-textField="[[$ctrl.stateModifier]] [[$ctrl.isRequired?\'required\':\'\']]">\n            <input\n                i-textField-input\n                placeholder="[[::$ctrl.name]]"\n                type="text"\n                ng-model="$ctrl.value"\n                ng-change="$ctrl.onChange()"\n                ng-blur="$ctrl.onBlur()"\n            >\n        </label>\n    '
+    template: TextFieldController.getTemplate
 });
 'use strict';
 
