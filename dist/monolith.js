@@ -29,7 +29,7 @@ angular.module('productReviewAppModule').config(['$interpolateProvider', '$compi
 // fieldsModule is for self-validating form fields components.
 // -----------------------------------------------------------------------------
 
-angular.module('fieldsModule', ['validatorModule']);
+angular.module('fieldsModule', ['stateModule', 'validatorModule']);
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -40,10 +40,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 // -----------------------------------------------------------------------------
 // textField component with such attr-options as:
+// - name (required attribute)
+// - label
 // - multiline
 // - required
-// - name*
-// - label*
 // -----------------------------------------------------------------------------
 
 var TextFieldController = function () {
@@ -67,6 +67,10 @@ var TextFieldController = function () {
 
     function TextFieldController($attrs, validator, state) {
         _classCallCheck(this, TextFieldController);
+
+        if (typeof $attrs.name === 'undefined') {
+            throw new Error('textField requires name attribute to work!');
+        }
 
         this._validator = validator;
         this._state = state;
@@ -105,7 +109,10 @@ var TextFieldController = function () {
             if ((typeof textFieldsData === 'undefined' ? 'undefined' : _typeof(textFieldsData)) !== 'object') {
                 textFieldsData = {};
             }
-            textFieldsData[this.name] = this.value;
+            textFieldsData[this.name] = {
+                value: this.value,
+                isValid: this.isValid
+            };
             this._state.setParam('textFields', textFieldsData);
         }
     }, {

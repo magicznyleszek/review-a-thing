@@ -3,5 +3,6 @@
 // -----------------------------------------------------------------------------
 
 angular.module('fieldsModule', [
+    'stateModule',
     'validatorModule'
 ]);

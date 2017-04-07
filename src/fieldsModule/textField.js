@@ -1,9 +1,9 @@
 // -----------------------------------------------------------------------------
 // textField component with such attr-options as:
+// - name (required attribute)
+// - label
 // - multiline
 // - required
-// - name*
-// - label*
 // -----------------------------------------------------------------------------
 
 class TextFieldController {
@@ -45,6 +45,10 @@ class TextFieldController {
     }
 
     constructor($attrs, validator, state) {
+        if (typeof $attrs.name === 'undefined') {
+            throw new Error('textField requires name attribute to work!');
+        }
+
         this._validator = validator;
         this._state = state;
 
@@ -77,7 +81,10 @@ class TextFieldController {
         if (typeof textFieldsData !== 'object') {
             textFieldsData = {};
         }
-        textFieldsData[this.name] = this.value;
+        textFieldsData[this.name] = {
+            value: this.value,
+            isValid: this.isValid
+        };
         this._state.setParam('textFields', textFieldsData);
     }
 
