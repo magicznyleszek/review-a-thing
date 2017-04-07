@@ -26,6 +26,75 @@ angular.module('productReviewAppModule').config(['$interpolateProvider', '$compi
 'use strict';
 
 // -----------------------------------------------------------------------------
+// fieldsModule is for self-validating form fields components.
+// -----------------------------------------------------------------------------
+
+angular.module('fieldsModule', ['validatorModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TextFieldController = function () {
+    _createClass(TextFieldController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            TextFieldController.style = {
+                initial: '',
+                error: 'error',
+                valid: 'valid'
+            };
+            TextFieldController.$inject = ['$attrs', 'validator', 'state'];
+        }
+    }]);
+
+    function TextFieldController($attrs, validator, state) {
+        _classCallCheck(this, TextFieldController);
+
+        this._validator = validator;
+
+        this.name = $attrs.name;
+        this.value = null;
+        this.stateModifier = TextFieldController.style.initial;
+        this.isRequired = typeof $attrs.required !== 'undefined';
+    }
+
+    _createClass(TextFieldController, [{
+        key: 'onChange',
+        value: function onChange() {
+            this._validate();
+        }
+    }, {
+        key: 'onBlur',
+        value: function onBlur() {
+            this._validate();
+        }
+    }, {
+        key: '_validate',
+        value: function _validate() {
+            if (this.isRequired) {
+                if (this._validator.isNonEmptyString(this.value)) {
+                    this.stateModifier = TextFieldController.style.valid;
+                } else {
+                    this.stateModifier = TextFieldController.style.error;
+                }
+            }
+        }
+    }]);
+
+    return TextFieldController;
+}();
+
+TextFieldController.initClass();
+
+angular.module('fieldsModule').component('textField', {
+    controller: TextFieldController,
+    template: '\n        <label i-textField="[[$ctrl.stateModifier]] [[$ctrl.isRequired?\'required\':\'\']]">\n            <input\n                i-textField-input\n                placeholder="[[::$ctrl.name]]"\n                type="text"\n                ng-model="$ctrl.value"\n                ng-change="$ctrl.onChange()"\n                ng-blur="$ctrl.onBlur()"\n            >\n        </label>\n    '
+});
+'use strict';
+
+// -----------------------------------------------------------------------------
 // observableModule is for managing a list of observers.
 // -----------------------------------------------------------------------------
 
@@ -211,7 +280,7 @@ angular.module('observableModule').factory('Observable', function () {
 // reviewFormModule is for managing review form inputs.
 // -----------------------------------------------------------------------------
 
-angular.module('reviewFormModule', ['validatorModule']);
+angular.module('reviewFormModule', ['fieldsModule']);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();

@@ -1,0 +1,85 @@
+/*******************************************************************************
+textField module
+*******************************************************************************/
+
+[i-textField] {
+    display: block;
+    position: relative;
+    padding: calc(var(--s-leading) * 0.5) 0;
+}
+
+/*******************************************************************************
+states
+*******************************************************************************/
+
+[i-textField~="error"] {
+    color: var(--c-rose);
+}
+
+[i-textField~="error"] [i-textField-input] {
+    background-color: color(var(--c-rose) alpha(10%));
+}
+
+[i-textField]::after {
+    pointer-events: none;
+    position: absolute;
+    top: var(--s-leading);
+    right: calc(var(--s-leading) * 0.5);
+}
+
+/* optional */
+
+[i-textField]:not([i-textField~="required"]) [i-textField-input] {
+    padding-right: 5rem;
+}
+
+[i-textField]:not([i-textField~="required"])::after {
+    content: "optional";
+    font-weight: 300;
+}
+
+/* required valid and invalid */
+
+[i-textField~="valid"][i-textField~="required"] [i-textField-input],
+[i-textField~="error"][i-textField~="required"] [i-textField-input] {
+    padding-right: 2rem;
+}
+
+[i-textField~="valid"][i-textField~="required"]::after {
+    content: "\2713";
+}
+
+[i-textField~="error"][i-textField~="required"]::after {
+    content: "\00d7";
+}
+
+/*******************************************************************************
+partials
+*******************************************************************************/
+
+[i-textField-input] {
+    display: block;
+    border-radius: var(--s-global-br);
+    padding: calc(var(--s-leading) * 0.5);
+    width: 100%;
+    background-color: color(var(--c-watercourse) alpha(10%));
+}
+
+/*******************************************************************************
+placeholder
+*******************************************************************************/
+
+[i-textField-input]::-moz-placeholder {
+    opacity: 0.5;
+    color: currentColor;
+}
+
+[i-textField-input]::-ms-input-placeholder {
+    opacity: 0.5;
+    color: currentColor;
+}
+
+[i-textField-input]::-webkit-input-placeholder {
+    opacity: 0.5;
+    color: currentColor;
+}

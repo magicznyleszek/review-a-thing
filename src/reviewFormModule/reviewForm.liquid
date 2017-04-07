@@ -5,16 +5,7 @@
 <div i-card ng-controller="reviewFormCtrl as reviewForm">
     <h1>User data and product review</h1>
 
-    <label>
-        <span>Your name</span>
+    <text-field name="Test name" required></text-field>
 
-        <input
-            type="text"
-            placeholder=""
-            ng-model="searchBox.phrase"
-            ng-change="searchBox.onSearchPhraseChanged()"
-            ng-focus="searchBox.onFocus()"
-            ng-blur="searchBox.onBlur()"
-        >
-    </label>
+    <text-field name="foo"></text-field>
 </div>

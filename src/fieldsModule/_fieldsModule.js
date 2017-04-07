@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
-// reviewFormModule is for managing review form inputs.
+// fieldsModule is for self-validating form fields components.
 // -----------------------------------------------------------------------------
 
-angular.module('reviewFormModule', [
-    'fieldsModule'
+angular.module('fieldsModule', [
+    'validatorModule'
 ]);
