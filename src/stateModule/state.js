@@ -40,3 +40,74 @@ class StateService {
 StateService.initClass();
 
 angular.module('stateModule').service('state', StateService);
+
+// WIP
+
+const initialState = {
+    currentStepId: null,
+    steps: [
+        {
+            id: 'review',
+            isUnlocked: false,
+            isErrorVisible: false
+        },
+        {
+            id: 'socials',
+            isUnlocked: false
+        },
+        {
+            id: 'summary',
+            isUnlocked: false
+        },
+        {
+            id: 'final',
+            isUnlocked: false
+        }
+    ],
+    areFieldsValid: null,
+    fields: {
+        yourName: {
+            value: null,
+            isRequired: true,
+            isValid: null
+        },
+        title: {
+            value: null,
+            isRequired: false,
+            isValid: null
+        },
+        review: {
+            value: null,
+            isRequired: true,
+            isValid: null
+        },
+        stars: {
+            value: null,
+            isRequired: true,
+            isValid: null
+        }
+    },
+    socials: {
+        facebook: false,
+        twitter: false,
+        linkedIn: false
+    }
+};
+
+const actions = {
+    updateField(fieldName, value) {
+        // set value
+        // validate
+        // set areFieldsValid by checking all fields
+        // check unlock step two
+    },
+    updateSocial(socialName, isChecked) {
+        // set value
+    },
+    showStepOneError() {
+        // set step one error
+    },
+    showStep(stepId) {
+        // set current step id
+    }
+};

@@ -626,6 +626,72 @@ var StateService = function () {
 StateService.initClass();
 
 angular.module('stateModule').service('state', StateService);
+
+// WIP
+
+var initialState = {
+    currentStepId: null,
+    steps: [{
+        id: 'review',
+        isUnlocked: false,
+        isErrorVisible: false
+    }, {
+        id: 'socials',
+        isUnlocked: false
+    }, {
+        id: 'summary',
+        isUnlocked: false
+    }, {
+        id: 'final',
+        isUnlocked: false
+    }],
+    areFieldsValid: null,
+    fields: {
+        yourName: {
+            value: null,
+            isRequired: true,
+            isValid: null
+        },
+        title: {
+            value: null,
+            isRequired: false,
+            isValid: null
+        },
+        review: {
+            value: null,
+            isRequired: true,
+            isValid: null
+        },
+        stars: {
+            value: null,
+            isRequired: true,
+            isValid: null
+        }
+    },
+    socials: {
+        facebook: false,
+        twitter: false,
+        linkedIn: false
+    }
+};
+
+var actions = {
+    updateField: function updateField(fieldName, value) {
+        // set value
+        // validate
+        // set areFieldsValid by checking all fields
+        // check unlock step two
+    },
+    updateSocial: function updateSocial(socialName, isChecked) {
+        // set value
+    },
+    showStepOneError: function showStepOneError() {
+        // set step one error
+    },
+    showStep: function showStep(stepId) {
+        // set current step id
+    }
+};
 'use strict';
 
 // -----------------------------------------------------------------------------
