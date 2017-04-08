@@ -567,85 +567,26 @@ angular.module('reviewFormModule').controller('reviewFormNextButtonCtrl', Review
 angular.module('stateModule', ['observableModule']);
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// state is a service that keeps global state data (user input and other stuff).
-// -----------------------------------------------------------------------------
-
-var StateService = function () {
-    _createClass(StateService, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            StateService.$inject = ['Observable'];
-        }
-    }]);
-
-    function StateService(Observable) {
-        _classCallCheck(this, StateService);
-
-        this._state = {};
-        this._stateObservable = new Observable();
-    }
-
-    _createClass(StateService, [{
-        key: 'registerStateObserver',
-        value: function registerStateObserver(observer) {
-            return this._stateObservable.register(observer);
-        }
-    }, {
-        key: 'setParam',
-        value: function setParam(paramName, paramValue) {
-            if (!_.isEqual(this._state[paramName], paramValue)) {
-                this._state[paramName] = paramValue;
-                this._stateObservable.notify();
-            }
-        }
-    }, {
-        key: 'getParam',
-        value: function getParam(paramName) {
-            var stateParam = this._state[paramName];
-            if (typeof stateParam === 'undefined') {
-                return null;
-            } else {
-                return _.cloneDeep(this._state[paramName]);
-            }
-        }
-    }, {
-        key: 'get',
-        value: function get() {
-            return _.cloneDeep(this._state);
-        }
-    }]);
-
-    return StateService;
-}();
-
-StateService.initClass();
-
-angular.module('stateModule').service('state', StateService);
-
-// WIP
-
-var initialState = {
+angular.module('stateModule').constant('initialReviewState', {
     currentStepId: null,
     steps: [{
         id: 'review',
+        isVisibleInMenu: false,
         isUnlocked: false,
         isErrorVisible: false
     }, {
         id: 'socials',
+        isVisibleInMenu: false,
         isUnlocked: false
     }, {
         id: 'summary',
+        isVisibleInMenu: false,
         isUnlocked: false
     }, {
         id: 'final',
+        isVisibleInMenu: false,
         isUnlocked: false
     }],
-    areFieldsValid: null,
     fields: {
         yourName: {
             value: null,
@@ -669,29 +610,118 @@ var initialState = {
         }
     },
     socials: {
-        facebook: false,
-        twitter: false,
-        linkedIn: false
+        facebook: null,
+        twitter: null,
+        linkedIn: null
     }
-};
+});
+'use strict';
 
-var actions = {
-    updateField: function updateField(fieldName, value) {
-        // set value
-        // validate
-        // set areFieldsValid by checking all fields
-        // check unlock step two
-    },
-    updateSocial: function updateSocial(socialName, isChecked) {
-        // set value
-    },
-    showStepOneError: function showStepOneError() {
-        // set step one error
-    },
-    showStep: function showStep(stepId) {
-        // set current step id
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// reviewActions is a service that has all methods for updating reviewStore
+// state partials.
+// -----------------------------------------------------------------------------
+
+var ReviewActionsService = function () {
+    _createClass(ReviewActionsService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            ReviewActionsService.$inject = ['reviewStore'];
+        }
+    }]);
+
+    function ReviewActionsService(reviewStore) {
+        _classCallCheck(this, ReviewActionsService);
+
+        this._reviewStore = reviewStore;
     }
-};
+
+    _createClass(ReviewActionsService, [{
+        key: 'setField',
+        value: function setField(fieldName, value) {
+            // set value
+            // validate
+            // set areFieldsValid by checking all fields
+            // check unlock step two
+        }
+    }, {
+        key: 'setSocial',
+        value: function setSocial(socialName, isChecked) {
+            // set value
+        }
+    }, {
+        key: 'setReviewError',
+        value: function setReviewError() {
+            // set step one error
+        }
+    }, {
+        key: 'setCurrentStepId',
+        value: function setCurrentStepId(stepId) {
+            // set current step id
+        }
+    }]);
+
+    return ReviewActionsService;
+}();
+
+ReviewActionsService.initClass();
+
+angular.module('stateModule').service('reviewActions', ReviewActionsService);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// reviewStore is a service that keeps global state data.
+// -----------------------------------------------------------------------------
+
+var ReviewStoreService = function () {
+    _createClass(ReviewStoreService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            ReviewStoreService.$inject = ['Observable', 'initialReviewState'];
+        }
+    }]);
+
+    function ReviewStoreService(Observable, initialReviewState) {
+        _classCallCheck(this, ReviewStoreService);
+
+        this._state = _.cloneDeep(initialReviewState);
+        this._stateObservable = new Observable();
+    }
+
+    _createClass(ReviewStoreService, [{
+        key: 'registerStateObserver',
+        value: function registerStateObserver(observer) {
+            return this._stateObservable.register(observer);
+        }
+    }, {
+        key: 'getState',
+        value: function getState() {
+            return _.cloneDeep(this._state);
+        }
+    }, {
+        key: 'setState',
+        value: function setState(newState) {
+            if (!_.isEqual(newState, this._state)) {
+                this._state = newState;
+                this._stateObservable.notify(this.getState());
+            }
+        }
+    }]);
+
+    return ReviewStoreService;
+}();
+
+ReviewStoreService.initClass();
+
+angular.module('stateModule').service('reviewStore', ReviewStoreService);
 'use strict';
 
 // -----------------------------------------------------------------------------
