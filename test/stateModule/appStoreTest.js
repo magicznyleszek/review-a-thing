@@ -1,16 +1,16 @@
-describe('reviewStore', () => {
-    let reviewStore = null;
+describe('appStore', () => {
+    let appStore = null;
 
     beforeEach(() => {
         module('testAppModule');
         module('stateModule');
         inject(($injector) => {
-            reviewStore = $injector.get('reviewStore');
+            appStore = $injector.get('appStore');
         });
     });
 
     it('should return state object with getState', () => {
-        const state = reviewStore.getState();
+        const state = appStore.getState();
         expect(typeof state).toBe('object');
     });
 });

@@ -1,11 +1,11 @@
-describe('reviewActions', () => {
-    let reviewActions = null;
+describe('appActions', () => {
+    let appActions = null;
 
     beforeEach(() => {
         module('testAppModule');
         module('stateModule');
         inject(($injector) => {
-            reviewActions = $injector.get('reviewActions');
+            appActions = $injector.get('appActions');
         });
     });
 

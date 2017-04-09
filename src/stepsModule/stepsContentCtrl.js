@@ -4,14 +4,14 @@
 
 class StepsContentController {
     static initClass() {
-        StepsContentController.$inject = ['reviewStore'];
+        StepsContentController.$inject = ['appStore'];
     }
 
-    constructor(reviewStore) {
+    constructor(appStore) {
         this.currentStepId = null;
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _onStateChange(state) {

@@ -4,17 +4,17 @@
 
 class StepsMenuController {
     static initClass() {
-        StepsMenuController.$inject = ['reviewStore', 'reviewActions'];
+        StepsMenuController.$inject = ['appStore', 'appActions'];
     }
 
-    constructor(reviewStore, reviewActions) {
-        this._reviewActions = reviewActions;
+    constructor(appStore, appActions) {
+        this._appActions = appActions;
 
         this.options = [];
 
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _onStateChange(state) {
@@ -23,7 +23,7 @@ class StepsMenuController {
         state.steps.forEach((stepData, stepId) => {
             stepData.id = stepId;
             stepData.show = () => {
-                this._reviewActions.setCurrentStepId(stepId);
+                this._appActions.setCurrentStepId(stepId);
             };
             this.options.push(stepData);
         });

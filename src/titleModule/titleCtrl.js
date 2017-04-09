@@ -4,14 +4,14 @@
 
 class TitleController {
     static initClass() {
-        TitleController.$inject = ['reviewStore'];
+        TitleController.$inject = ['appStore'];
     }
 
-    constructor(reviewStore) {
+    constructor(appStore) {
         this.text = null;
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _onStateChange(state) {

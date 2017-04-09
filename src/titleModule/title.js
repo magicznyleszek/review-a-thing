@@ -4,12 +4,12 @@
 
 class TitleService {
     static initClass() {
-        TitleService.$inject = ['reviewStore', 'reviewActions', 'urlParams'];
+        TitleService.$inject = ['appStore', 'appActions', 'urlParams'];
     }
 
-    constructor(reviewStore, reviewActions, urlParams) {
+    constructor(appStore, appActions, urlParams) {
         // set initial title state from url params
-        reviewActions.setProductTitle(urlParams.getParam('product'));
+        appActions.setProductTitle(urlParams.getParam('product'));
     }
 }
 

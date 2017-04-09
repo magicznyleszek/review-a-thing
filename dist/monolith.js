@@ -59,18 +59,18 @@ var TextFieldController = function () {
                 return '\n                <label i-textField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?\'required\':\'\']]">\n                    ' + input + '\n                </label>\n            ';
             };
 
-            TextFieldController.$inject = ['$attrs', 'reviewStore', 'reviewActions'];
+            TextFieldController.$inject = ['$attrs', 'appStore', 'appActions'];
         }
     }]);
 
-    function TextFieldController($attrs, reviewStore, reviewActions) {
+    function TextFieldController($attrs, appStore, appActions) {
         _classCallCheck(this, TextFieldController);
 
         if (typeof $attrs.name === 'undefined') {
             throw new Error('textField requires name attribute to work!');
         }
 
-        this._reviewActions = reviewActions;
+        this._appActions = appActions;
 
         this.label = $attrs.label;
         this.name = $attrs.name;
@@ -78,7 +78,7 @@ var TextFieldController = function () {
         this.isRequired = typeof $attrs.required !== 'undefined';
         this.isValid = null;
 
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
     }
 
     _createClass(TextFieldController, [{
@@ -89,12 +89,12 @@ var TextFieldController = function () {
     }, {
         key: 'onChange',
         value: function onChange() {
-            this._reviewActions.setField(this.name, this.value);
+            this._appActions.setField(this.name, this.value);
         }
     }, {
         key: 'onBlur',
         value: function onBlur() {
-            this._reviewActions.setField(this.name, this.value);
+            this._appActions.setField(this.name, this.value);
         }
     }, {
         key: 'getValidModifier',
@@ -322,17 +322,17 @@ var ReviewFormErrorController = function () {
         key: 'initClass',
         value: function initClass() {
             ReviewFormErrorController.stepId = 'form';
-            ReviewFormErrorController.$inject = ['reviewStore'];
+            ReviewFormErrorController.$inject = ['appStore'];
         }
     }]);
 
-    function ReviewFormErrorController(reviewStore) {
+    function ReviewFormErrorController(appStore) {
         _classCallCheck(this, ReviewFormErrorController);
 
         this.isVisible = null;
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _createClass(ReviewFormErrorController, [{
@@ -362,15 +362,15 @@ var ReviewFormNextButtonController = function () {
     _createClass(ReviewFormNextButtonController, null, [{
         key: 'initClass',
         value: function initClass() {
-            ReviewFormNextButtonController.$inject = ['reviewStore', 'reviewActions'];
+            ReviewFormNextButtonController.$inject = ['appStore', 'appActions'];
         }
     }]);
 
-    function ReviewFormNextButtonController(reviewStore, reviewActions) {
+    function ReviewFormNextButtonController(appStore, appActions) {
         _classCallCheck(this, ReviewFormNextButtonController);
 
-        this._reviewStore = reviewStore;
-        this._reviewActions = reviewActions;
+        this._appStore = appStore;
+        this._appActions = appActions;
     }
 
     _createClass(ReviewFormNextButtonController, [{
@@ -395,7 +395,158 @@ angular.module('reviewFormModule').controller('reviewFormNextButtonCtrl', Review
 angular.module('stateModule', ['observableModule', 'validatorModule']);
 'use strict';
 
-angular.module('stateModule').constant('initialReviewState', {
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// appActions is a service that has all methods for updating appStore
+// state partials.
+// -----------------------------------------------------------------------------
+
+var appActionsService = function () {
+    _createClass(appActionsService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            appActionsService.$inject = ['appStore', 'validator'];
+        }
+    }]);
+
+    function appActionsService(appStore, validator) {
+        _classCallCheck(this, appActionsService);
+
+        this._appStore = appStore;
+        this._validator = validator;
+    }
+
+    _createClass(appActionsService, [{
+        key: 'setProductTitle',
+        value: function setProductTitle(title) {
+            var state = this._appStore.getState();
+
+            state.productTitle = title;
+
+            this._appStore.setState(state);
+        }
+    }, {
+        key: 'setField',
+        value: function setField(fieldName, value) {
+            var state = this._appStore.getState();
+
+            if (typeof state.fields[fieldName] === 'undefined') {
+                throw new Error('Unknown field: "' + fieldName + '"!');
+            }
+
+            state.fields[fieldName].value = value;
+
+            if (state.fields[fieldName].isRequired) {
+                if (state.fields[fieldName].validityType === 'text') {
+                    state.fields[fieldName].isValid = this._validator.isNonEmptyString(value);
+                } else if (state.fields[fieldName].validityType === 'rating') {
+                    state.fields[fieldName].isValid = this._validator.isIntegerInRange(value, 1, 5);
+                }
+            }
+            // set areFieldsValid by checking all fields
+            // check unlock step two
+
+            this._appStore.setState(state);
+        }
+    }, {
+        key: 'setSocial',
+        value: function setSocial(socialName, isChecked) {
+            var state = this._appStore.getState();
+
+            if (typeof state.socials[socialName] === 'undefined') {
+                throw new Error('Unknown social: "' + socialName + '"!');
+            }
+
+            state.socials[socialName] = isChecked;
+
+            this._appStore.setState(state);
+        }
+    }, {
+        key: 'setFormError',
+        value: function setFormError(isErrored) {
+            var state = this._appStore.getState();
+            state.steps.get('form').isErrorVisible = isErrored;
+
+            this._appStore.setState(state);
+        }
+    }, {
+        key: 'setCurrentStepId',
+        value: function setCurrentStepId(stepId) {
+            var state = this._appStore.getState();
+
+            if (typeof state.steps.get(stepId) === 'undefined') {
+                throw new Error('Unknown step: "' + stepId + '"!');
+            }
+
+            state.currentStepId = stepId;
+
+            this._appStore.setState(state);
+        }
+    }]);
+
+    return appActionsService;
+}();
+
+appActionsService.initClass();
+
+angular.module('stateModule').service('appActions', appActionsService);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// appStore is a service that keeps global state data.
+// -----------------------------------------------------------------------------
+
+var appStoreService = function () {
+    _createClass(appStoreService, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            appStoreService.$inject = ['Observable', 'initialAppState'];
+        }
+    }]);
+
+    function appStoreService(Observable, initialAppState) {
+        _classCallCheck(this, appStoreService);
+
+        this._state = _.cloneDeep(initialAppState);
+        this._stateObservable = new Observable();
+    }
+
+    _createClass(appStoreService, [{
+        key: 'registerStateObserver',
+        value: function registerStateObserver(observer) {
+            return this._stateObservable.register(observer);
+        }
+    }, {
+        key: 'getState',
+        value: function getState() {
+            return _.cloneDeep(this._state);
+        }
+    }, {
+        key: 'setState',
+        value: function setState(newState) {
+            if (!_.isEqual(newState, this._state)) {
+                this._state = newState;
+                this._stateObservable.notify(this.getState());
+            }
+        }
+    }]);
+
+    return appStoreService;
+}();
+
+appStoreService.initClass();
+
+angular.module('stateModule').service('appStore', appStoreService);
+'use strict';
+
+angular.module('stateModule').constant('initialAppState', {
     productTitle: null,
     currentStepId: null,
     steps: new Map([['form', {
@@ -449,157 +600,6 @@ angular.module('stateModule').constant('initialReviewState', {
 });
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// reviewActions is a service that has all methods for updating reviewStore
-// state partials.
-// -----------------------------------------------------------------------------
-
-var ReviewActionsService = function () {
-    _createClass(ReviewActionsService, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            ReviewActionsService.$inject = ['reviewStore', 'validator'];
-        }
-    }]);
-
-    function ReviewActionsService(reviewStore, validator) {
-        _classCallCheck(this, ReviewActionsService);
-
-        this._reviewStore = reviewStore;
-        this._validator = validator;
-    }
-
-    _createClass(ReviewActionsService, [{
-        key: 'setProductTitle',
-        value: function setProductTitle(title) {
-            var state = this._reviewStore.getState();
-
-            state.productTitle = title;
-
-            this._reviewStore.setState(state);
-        }
-    }, {
-        key: 'setField',
-        value: function setField(fieldName, value) {
-            var state = this._reviewStore.getState();
-
-            if (typeof state.fields[fieldName] === 'undefined') {
-                throw new Error('Unknown field: "' + fieldName + '"!');
-            }
-
-            state.fields[fieldName].value = value;
-
-            if (state.fields[fieldName].isRequired) {
-                if (state.fields[fieldName].validityType === 'text') {
-                    state.fields[fieldName].isValid = this._validator.isNonEmptyString(value);
-                } else if (state.fields[fieldName].validityType === 'rating') {
-                    state.fields[fieldName].isValid = this._validator.isIntegerInRange(value, 1, 5);
-                }
-            }
-            // set areFieldsValid by checking all fields
-            // check unlock step two
-
-            this._reviewStore.setState(state);
-        }
-    }, {
-        key: 'setSocial',
-        value: function setSocial(socialName, isChecked) {
-            var state = this._reviewStore.getState();
-
-            if (typeof state.socials[socialName] === 'undefined') {
-                throw new Error('Unknown social: "' + socialName + '"!');
-            }
-
-            state.socials[socialName] = isChecked;
-
-            this._reviewStore.setState(state);
-        }
-    }, {
-        key: 'setFormError',
-        value: function setFormError(isErrored) {
-            var state = this._reviewStore.getState();
-            state.steps.get('form').isErrorVisible = isErrored;
-
-            this._reviewStore.setState(state);
-        }
-    }, {
-        key: 'setCurrentStepId',
-        value: function setCurrentStepId(stepId) {
-            var state = this._reviewStore.getState();
-
-            if (typeof state.steps.get(stepId) === 'undefined') {
-                throw new Error('Unknown step: "' + stepId + '"!');
-            }
-
-            state.currentStepId = stepId;
-
-            this._reviewStore.setState(state);
-        }
-    }]);
-
-    return ReviewActionsService;
-}();
-
-ReviewActionsService.initClass();
-
-angular.module('stateModule').service('reviewActions', ReviewActionsService);
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// reviewStore is a service that keeps global state data.
-// -----------------------------------------------------------------------------
-
-var ReviewStoreService = function () {
-    _createClass(ReviewStoreService, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            ReviewStoreService.$inject = ['Observable', 'initialReviewState'];
-        }
-    }]);
-
-    function ReviewStoreService(Observable, initialReviewState) {
-        _classCallCheck(this, ReviewStoreService);
-
-        this._state = _.cloneDeep(initialReviewState);
-        this._stateObservable = new Observable();
-    }
-
-    _createClass(ReviewStoreService, [{
-        key: 'registerStateObserver',
-        value: function registerStateObserver(observer) {
-            return this._stateObservable.register(observer);
-        }
-    }, {
-        key: 'getState',
-        value: function getState() {
-            return _.cloneDeep(this._state);
-        }
-    }, {
-        key: 'setState',
-        value: function setState(newState) {
-            if (!_.isEqual(newState, this._state)) {
-                this._state = newState;
-                this._stateObservable.notify(this.getState());
-            }
-        }
-    }]);
-
-    return ReviewStoreService;
-}();
-
-ReviewStoreService.initClass();
-
-angular.module('stateModule').service('reviewStore', ReviewStoreService);
-'use strict';
-
 // -----------------------------------------------------------------------------
 // stepsModule is for displaying steps.
 // -----------------------------------------------------------------------------
@@ -619,17 +619,17 @@ var StepsContentController = function () {
     _createClass(StepsContentController, null, [{
         key: 'initClass',
         value: function initClass() {
-            StepsContentController.$inject = ['reviewStore'];
+            StepsContentController.$inject = ['appStore'];
         }
     }]);
 
-    function StepsContentController(reviewStore) {
+    function StepsContentController(appStore) {
         _classCallCheck(this, StepsContentController);
 
         this.currentStepId = null;
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _createClass(StepsContentController, [{
@@ -659,20 +659,20 @@ var StepsMenuController = function () {
     _createClass(StepsMenuController, null, [{
         key: 'initClass',
         value: function initClass() {
-            StepsMenuController.$inject = ['reviewStore', 'reviewActions'];
+            StepsMenuController.$inject = ['appStore', 'appActions'];
         }
     }]);
 
-    function StepsMenuController(reviewStore, reviewActions) {
+    function StepsMenuController(appStore, appActions) {
         _classCallCheck(this, StepsMenuController);
 
-        this._reviewActions = reviewActions;
+        this._appActions = appActions;
 
         this.options = [];
 
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _createClass(StepsMenuController, [{
@@ -685,7 +685,7 @@ var StepsMenuController = function () {
             state.steps.forEach(function (stepData, stepId) {
                 stepData.id = stepId;
                 stepData.show = function () {
-                    _this._reviewActions.setCurrentStepId(stepId);
+                    _this._appActions.setCurrentStepId(stepId);
                 };
                 _this.options.push(stepData);
             });
@@ -721,15 +721,15 @@ var TitleService = function () {
     _createClass(TitleService, null, [{
         key: 'initClass',
         value: function initClass() {
-            TitleService.$inject = ['reviewStore', 'reviewActions', 'urlParams'];
+            TitleService.$inject = ['appStore', 'appActions', 'urlParams'];
         }
     }]);
 
-    function TitleService(reviewStore, reviewActions, urlParams) {
+    function TitleService(appStore, appActions, urlParams) {
         _classCallCheck(this, TitleService);
 
         // set initial title state from url params
-        reviewActions.setProductTitle(urlParams.getParam('product'));
+        appActions.setProductTitle(urlParams.getParam('product'));
     }
 
     return TitleService;
@@ -752,17 +752,17 @@ var TitleController = function () {
     _createClass(TitleController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TitleController.$inject = ['reviewStore'];
+            TitleController.$inject = ['appStore'];
         }
     }]);
 
-    function TitleController(reviewStore) {
+    function TitleController(appStore) {
         _classCallCheck(this, TitleController);
 
         this.text = null;
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange(reviewStore.getState());
+        this._onStateChange(appStore.getState());
     }
 
     _createClass(TitleController, [{

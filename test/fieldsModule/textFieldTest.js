@@ -1,5 +1,5 @@
 describe('textField', () => {
-    let reviewStore = null;
+    let appStore = null;
     let $compile = null;
     let $componentController = null;
     let scope = null;
@@ -8,7 +8,7 @@ describe('textField', () => {
         module('testAppModule');
         module('fieldsModule');
         inject(($injector, $rootScope) => {
-            reviewStore = $injector.get('reviewStore');
+            appStore = $injector.get('appStore');
             $compile = $injector.get('$compile');
             $componentController = $injector.get('$componentController');
             scope = $rootScope.$new();
@@ -52,7 +52,7 @@ describe('textField', () => {
         const compCtrl = getComponentCtrl({name: 'title'});
         compCtrl.value = 'Quasimodo';
         compCtrl.onChange();
-        const state = reviewStore.getState();
+        const state = appStore.getState();
         expect(state.fields.title.value).toBe('Quasimodo');
     });
 
@@ -60,7 +60,7 @@ describe('textField', () => {
         const compCtrl = getComponentCtrl({name: 'title'});
         compCtrl.value = 'Aladdin';
         compCtrl.onBlur();
-        const state = reviewStore.getState();
+        const state = appStore.getState();
         expect(state.fields.title.value).toBe('Aladdin');
     });
 
@@ -68,7 +68,7 @@ describe('textField', () => {
         const compCtrl = getComponentCtrl({name: 'title', required: ''});
         compCtrl.value = '';
         compCtrl.onChange();
-        const state = reviewStore.getState();
+        const state = appStore.getState();
         expect(state.fields.title.isValid).toBe(false);
     });
 
@@ -76,7 +76,7 @@ describe('textField', () => {
         const compCtrl = getComponentCtrl({name: 'title', required: ''});
         compCtrl.value = 'I am a proper thing!';
         compCtrl.onChange();
-        const state = reviewStore.getState();
+        const state = appStore.getState();
         expect(state.fields.title.isValid).toBe(true);
     });
 

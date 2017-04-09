@@ -43,17 +43,17 @@ class TextFieldController {
 
         TextFieldController.$inject = [
             '$attrs',
-            'reviewStore',
-            'reviewActions'
+            'appStore',
+            'appActions'
         ];
     }
 
-    constructor($attrs, reviewStore, reviewActions) {
+    constructor($attrs, appStore, appActions) {
         if (typeof $attrs.name === 'undefined') {
             throw new Error('textField requires name attribute to work!');
         }
 
-        this._reviewActions = reviewActions;
+        this._appActions = appActions;
 
         this.label = $attrs.label;
         this.name = $attrs.name;
@@ -61,7 +61,7 @@ class TextFieldController {
         this.isRequired = typeof $attrs.required !== 'undefined';
         this.isValid = null;
 
-        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+        appStore.registerStateObserver(this._onStateChange.bind(this));
     }
 
     _onStateChange(state) {
@@ -69,11 +69,11 @@ class TextFieldController {
     }
 
     onChange() {
-        this._reviewActions.setField(this.name, this.value);
+        this._appActions.setField(this.name, this.value);
     }
 
     onBlur() {
-        this._reviewActions.setField(this.name, this.value);
+        this._appActions.setField(this.name, this.value);
     }
 
     getValidModifier() {

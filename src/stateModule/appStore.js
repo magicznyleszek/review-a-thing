@@ -1,14 +1,14 @@
 // -----------------------------------------------------------------------------
-// reviewStore is a service that keeps global state data.
+// appStore is a service that keeps global state data.
 // -----------------------------------------------------------------------------
 
-class ReviewStoreService {
+class appStoreService {
     static initClass() {
-        ReviewStoreService.$inject = ['Observable', 'initialReviewState'];
+        appStoreService.$inject = ['Observable', 'initialAppState'];
     }
 
-    constructor(Observable, initialReviewState) {
-        this._state = _.cloneDeep(initialReviewState);
+    constructor(Observable, initialAppState) {
+        this._state = _.cloneDeep(initialAppState);
         this._stateObservable = new Observable();
     }
 
@@ -28,6 +28,6 @@ class ReviewStoreService {
     }
 }
 
-ReviewStoreService.initClass();
+appStoreService.initClass();
 
-angular.module('stateModule').service('reviewStore', ReviewStoreService);
+angular.module('stateModule').service('appStore', appStoreService);

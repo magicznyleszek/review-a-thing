@@ -1,28 +1,28 @@
 // -----------------------------------------------------------------------------
-// reviewActions is a service that has all methods for updating reviewStore
+// appActions is a service that has all methods for updating appStore
 // state partials.
 // -----------------------------------------------------------------------------
 
-class ReviewActionsService {
+class appActionsService {
     static initClass() {
-        ReviewActionsService.$inject = ['reviewStore', 'validator'];
+        appActionsService.$inject = ['appStore', 'validator'];
     }
 
-    constructor(reviewStore, validator) {
-        this._reviewStore = reviewStore;
+    constructor(appStore, validator) {
+        this._appStore = appStore;
         this._validator = validator;
     }
 
     setProductTitle(title) {
-        const state = this._reviewStore.getState();
+        const state = this._appStore.getState();
 
         state.productTitle = title;
 
-        this._reviewStore.setState(state);
+        this._appStore.setState(state);
     }
 
     setField(fieldName, value) {
-        const state = this._reviewStore.getState();
+        const state = this._appStore.getState();
 
         if (typeof state.fields[fieldName] === 'undefined') {
             throw new Error(`Unknown field: "${fieldName}"!`);
@@ -40,11 +40,11 @@ class ReviewActionsService {
         // set areFieldsValid by checking all fields
         // check unlock step two
 
-        this._reviewStore.setState(state);
+        this._appStore.setState(state);
     }
 
     setSocial(socialName, isChecked) {
-        const state = this._reviewStore.getState();
+        const state = this._appStore.getState();
 
         if (typeof state.socials[socialName] === 'undefined') {
             throw new Error(`Unknown social: "${socialName}"!`);
@@ -52,18 +52,18 @@ class ReviewActionsService {
 
         state.socials[socialName] = isChecked;
 
-        this._reviewStore.setState(state);
+        this._appStore.setState(state);
     }
 
     setFormError(isErrored) {
-        const state = this._reviewStore.getState();
+        const state = this._appStore.getState();
         state.steps.get('form').isErrorVisible = isErrored;
 
-        this._reviewStore.setState(state);
+        this._appStore.setState(state);
     }
 
     setCurrentStepId(stepId) {
-        const state = this._reviewStore.getState();
+        const state = this._appStore.getState();
 
         if (typeof state.steps.get(stepId) === 'undefined') {
             throw new Error(`Unknown step: "${stepId}"!`);
@@ -71,10 +71,10 @@ class ReviewActionsService {
 
         state.currentStepId = stepId;
 
-        this._reviewStore.setState(state);
+        this._appStore.setState(state);
     }
 }
 
-ReviewActionsService.initClass();
+appActionsService.initClass();
 
-angular.module('stateModule').service('reviewActions', ReviewActionsService);
+angular.module('stateModule').service('appActions', appActionsService);

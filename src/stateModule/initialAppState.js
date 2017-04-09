@@ -1,4 +1,4 @@
-angular.module('stateModule').constant('initialReviewState', {
+angular.module('stateModule').constant('initialAppState', {
     productTitle: null,
     currentStepId: null,
     steps: new Map([

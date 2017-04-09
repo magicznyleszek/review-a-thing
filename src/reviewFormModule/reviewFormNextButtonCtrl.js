@@ -5,14 +5,14 @@
 class ReviewFormNextButtonController {
     static initClass() {
         ReviewFormNextButtonController.$inject = [
-            'reviewStore',
-            'reviewActions'
+            'appStore',
+            'appActions'
         ];
     }
 
-    constructor(reviewStore, reviewActions) {
-        this._reviewStore = reviewStore;
-        this._reviewActions = reviewActions;
+    constructor(appStore, appActions) {
+        this._appStore = appStore;
+        this._appActions = appActions;
     }
 
     tryGoNext() {
