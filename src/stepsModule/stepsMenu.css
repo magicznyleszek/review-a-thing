@@ -17,18 +17,21 @@ stepsMenu module
 }
 
 [i-stepsMenu-button] {
+    margin: 0;
+    border: 0;
+    outline: 0;
     cursor: pointer;
     background: transparent;
 }
 
 [i-stepsMenu-button]:not([disabled]) {
-    color: var(--c-jade);
+    color: var(--c-watercourse);
 }
 
 [i-stepsMenu-button]:hover {
-    color: color(var(--c-jade) shade(10%));
+    color: var(--c-jade);
 }
 
 [i-stepsMenu-button]:active {
-    color: color(var(--c-jade) shade(20%));
+    color: var(--c-deepSkyBlue);
 }
