@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
-// tabsModule is for displaying and managing tabs.
+// stepsModule is for displaying steps.
 // -----------------------------------------------------------------------------
 
-angular.module('tabsModule', [
+angular.module('stepsModule', [
     'stateModule'
 ]);

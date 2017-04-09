@@ -5,19 +5,23 @@
 
     {% include titleModule/title.liquid %}
 
-    {% include tabsModule/tabsMenu.liquid %}
+    {% include stepsModule/stepsMenu.liquid %}
 
-    <div ng-controller="tabsContentCtrl as tabsContent">
-        <div ng-show="tabsContent.areTabsVisible.s1">
+    <div ng-controller="stepsContentCtrl as stepsContent">
+        <div ng-show="stepsContent.currentStepId === 'form'">
             {% include reviewFormModule/reviewForm.liquid %}
         </div>
 
-        <div ng-show="tabsContent.areTabsVisible.s2">
+        <div ng-show="stepsContent.currentStepId === 'socials'">
             step 2 content
         </div>
 
-        <div ng-show="tabsContent.areTabsVisible.s3">
+        <div ng-show="stepsContent.currentStepId === 'summary'">
             step 3 content
+        </div>
+
+        <div ng-show="stepsContent.currentStepId === 'final'">
+            Thank you!
         </div>
     </div>
 

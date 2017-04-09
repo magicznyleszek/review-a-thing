@@ -4,6 +4,6 @@
 
 angular.module('productReviewAppModule', [
     'titleModule',
-    'tabsModule',
+    'stepsModule',
     'reviewFormModule'
 ]);

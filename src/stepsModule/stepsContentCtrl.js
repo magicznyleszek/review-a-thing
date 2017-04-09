@@ -1,24 +1,27 @@
 // -----------------------------------------------------------------------------
-// titleCtrl -- handles displaying a title.
+// stepsContentCtrl -- handles displaying steps content.
 // -----------------------------------------------------------------------------
 
-class TitleController {
+class StepsContentController {
     static initClass() {
-        TitleController.$inject = ['reviewStore'];
+        StepsContentController.$inject = ['reviewStore'];
     }
 
     constructor(reviewStore) {
-        this.text = null;
+        this.currentStepId = null;
         reviewStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
         this._onStateChange(reviewStore.getState());
     }
 
     _onStateChange(state) {
-        this.text = state.productTitle;
+        this.currentStepId = state.currentStepId;
     }
 }
 
-TitleController.initClass();
+StepsContentController.initClass();
 
-angular.module('titleModule').controller('titleCtrl', TitleController);
+angular.module('stepsModule').controller(
+    'stepsContentCtrl',
+    StepsContentController
+);

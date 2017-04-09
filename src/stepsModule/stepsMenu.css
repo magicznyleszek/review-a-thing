@@ -1,34 +1,34 @@
 /*******************************************************************************
-tabsMenu module
+stepsMenu module
 *******************************************************************************/
 
-[i-tabsMenu] {
+[i-stepsMenu] {
     text-align: center;
 }
 
-[i-tabsMenu-item] {
+[i-stepsMenu-item] {
     display: inline-block;
 }
 
-[i-tabsMenu-item]:not(:first-of-type)::before {
+[i-stepsMenu-item]:not(:first-of-type)::before {
     content: "\2192";
     float: left;
     margin: 0 2rem;
 }
 
-[i-tabsMenu-button] {
+[i-stepsMenu-button] {
     cursor: pointer;
     background: transparent;
 }
 
-[i-tabsMenu-button]:not([disabled]) {
+[i-stepsMenu-button]:not([disabled]) {
     color: var(--c-jade);
 }
 
-[i-tabsMenu-button]:hover {
+[i-stepsMenu-button]:hover {
     color: color(var(--c-jade) shade(10%));
 }
 
-[i-tabsMenu-button]:active {
+[i-stepsMenu-button]:active {
     color: color(var(--c-jade) shade(20%));
 }

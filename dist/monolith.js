@@ -5,7 +5,7 @@
 // productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', ['titleModule', 'tabsModule', 'reviewFormModule']);
+angular.module('productReviewAppModule', ['titleModule', 'stepsModule', 'reviewFormModule']);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -31,8 +31,6 @@ angular.module('productReviewAppModule').config(['$interpolateProvider', '$compi
 
 angular.module('fieldsModule', ['stateModule', 'validatorModule']);
 'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -61,60 +59,42 @@ var TextFieldController = function () {
                 return '\n                <label i-textField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?\'required\':\'\']]">\n                    ' + input + '\n                </label>\n            ';
             };
 
-            TextFieldController.$inject = ['$attrs', 'validator', 'state'];
+            TextFieldController.$inject = ['$attrs', 'reviewStore', 'reviewActions'];
         }
     }]);
 
-    function TextFieldController($attrs, validator, state) {
+    function TextFieldController($attrs, reviewStore, reviewActions) {
         _classCallCheck(this, TextFieldController);
 
         if (typeof $attrs.name === 'undefined') {
             throw new Error('textField requires name attribute to work!');
         }
 
-        this._validator = validator;
-        this._state = state;
+        this._reviewActions = reviewActions;
 
         this.label = $attrs.label;
         this.name = $attrs.name;
         this.value = null;
         this.isRequired = typeof $attrs.required !== 'undefined';
         this.isValid = null;
+
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
     }
 
     _createClass(TextFieldController, [{
+        key: '_onStateChange',
+        value: function _onStateChange(state) {
+            this.isValid = state.fields[this.name].isValid;
+        }
+    }, {
         key: 'onChange',
         value: function onChange() {
-            this._verifyValue();
-            this._saveValue();
+            this._reviewActions.setField(this.name, this.value);
         }
     }, {
         key: 'onBlur',
         value: function onBlur() {
-            this._verifyValue();
-            this._saveValue();
-        }
-    }, {
-        key: '_verifyValue',
-        value: function _verifyValue() {
-            if (this.isRequired) {
-                this.isValid = this._validator.isNonEmptyString(this.value);
-            }
-        }
-    }, {
-        key: '_saveValue',
-        value: function _saveValue() {
-            var currentState = this._state.get();
-            var textFieldsData = currentState.textFields;
-            if ((typeof textFieldsData === 'undefined' ? 'undefined' : _typeof(textFieldsData)) !== 'object') {
-                textFieldsData = {};
-            }
-            textFieldsData[this.name] = {
-                value: this.value,
-                isValid: this.isValid,
-                isRequired: this.isRequired
-            };
-            this._state.setParam('textFields', textFieldsData);
+            this._reviewActions.setField(this.name, this.value);
         }
     }, {
         key: 'getValidModifier',
@@ -326,65 +306,7 @@ angular.module('observableModule').factory('Observable', function () {
 // reviewFormModule is for managing review form inputs.
 // -----------------------------------------------------------------------------
 
-angular.module('reviewFormModule', ['fieldsModule', 'tabsModule']);
-
-angular.module('reviewFormModule').run(['reviewFormChecker', angular.noop]);
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// reviewFormChecker is a service for managing first tab state.
-// -----------------------------------------------------------------------------
-
-var ReviewFormCheckerService = function () {
-    _createClass(ReviewFormCheckerService, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            ReviewFormCheckerService.tabId = 's1';
-            ReviewFormCheckerService.nextTabId = 's2';
-            ReviewFormCheckerService.$inject = ['state', 'tabs'];
-        }
-    }]);
-
-    function ReviewFormCheckerService(state, tabs) {
-        _classCallCheck(this, ReviewFormCheckerService);
-
-        this._state = state;
-        this._tabs = tabs;
-
-        this._state.registerStateObserver(this._onStateChange.bind(this));
-        // get initial state
-        this._onStateChange();
-
-        // show first tab
-        this._tabs.showTab(ReviewFormCheckerService.tabId);
-    }
-
-    _createClass(ReviewFormCheckerService, [{
-        key: '_onStateChange',
-        value: function _onStateChange() {
-            var textFieldsState = this._state.getParam('textFields');
-
-            if (textFieldsState !== null) {
-                this._tabs.unlockTab(ReviewFormCheckerService.tabId);
-                if (typeof textFieldsState.yourName !== 'undefined' && textFieldsState.yourName.isValid === true && typeof textFieldsState.review !== 'undefined' && textFieldsState.review.isValid === true) {
-                    this._tabs.unlockTab(ReviewFormCheckerService.nextTabId);
-                } else {
-                    this._tabs.lockTab(ReviewFormCheckerService.nextTabId);
-                }
-            }
-        }
-    }]);
-
-    return ReviewFormCheckerService;
-}();
-
-ReviewFormCheckerService.initClass();
-
-angular.module('reviewFormModule').service('reviewFormChecker', ReviewFormCheckerService);
+angular.module('reviewFormModule', ['fieldsModule', 'stateModule']);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -399,85 +321,24 @@ var ReviewFormErrorController = function () {
     _createClass(ReviewFormErrorController, null, [{
         key: 'initClass',
         value: function initClass() {
-            ReviewFormErrorController.tabId = 's1';
-            ReviewFormErrorController.$inject = ['state'];
+            ReviewFormErrorController.stepId = 'form';
+            ReviewFormErrorController.$inject = ['reviewStore'];
         }
     }]);
 
-    function ReviewFormErrorController(state) {
+    function ReviewFormErrorController(reviewStore) {
         _classCallCheck(this, ReviewFormErrorController);
 
-        this._state = state;
-        this.isVisible = false;
-        this._state.registerStateObserver(this._onStateChange.bind(this));
+        this.isVisible = null;
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange();
+        this._onStateChange(reviewStore.getState());
     }
 
     _createClass(ReviewFormErrorController, [{
         key: '_onStateChange',
-        value: function _onStateChange() {
-            var tabsState = this._state.getParam('tabs');
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = tabsState[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var tab = _step.value;
-
-                    if (tab.id === ReviewFormErrorController.tabId) {
-                        if (!tab.isUnlocked) {
-                            return;
-                        }
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            var textFieldsState = this._state.getParam('textFields');
-            this.isVisible = false;
-            if (textFieldsState !== null) {
-                var _iteratorNormalCompletion2 = true;
-                var _didIteratorError2 = false;
-                var _iteratorError2 = undefined;
-
-                try {
-                    for (var _iterator2 = Object.keys(textFieldsState)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                        var fieldName = _step2.value;
-
-                        if (textFieldsState[fieldName].isValid === false) {
-                            this.isVisible = true;
-                            break;
-                        }
-                    }
-                } catch (err) {
-                    _didIteratorError2 = true;
-                    _iteratorError2 = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                            _iterator2.return();
-                        }
-                    } finally {
-                        if (_didIteratorError2) {
-                            throw _iteratorError2;
-                        }
-                    }
-                }
-            }
+        value: function _onStateChange(state) {
+            this.isVisible = state.steps.get('form').isErrorVisible;
         }
     }]);
 
@@ -494,61 +355,28 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// reviewFormNextButtonCtrl -- handles displaying error message.
+// reviewFormNextButtonCtrl -- handles a button for going to next step.
 // -----------------------------------------------------------------------------
 
 var ReviewFormNextButtonController = function () {
     _createClass(ReviewFormNextButtonController, null, [{
         key: 'initClass',
         value: function initClass() {
-            ReviewFormNextButtonController.tabId = 's1';
-            ReviewFormNextButtonController.nextTabId = 's2';
-            ReviewFormNextButtonController.$inject = ['state', 'tabs'];
+            ReviewFormNextButtonController.$inject = ['reviewStore', 'reviewActions'];
         }
     }]);
 
-    function ReviewFormNextButtonController(state, tabs) {
+    function ReviewFormNextButtonController(reviewStore, reviewActions) {
         _classCallCheck(this, ReviewFormNextButtonController);
 
-        this._state = state;
-        this._tabs = tabs;
+        this._reviewStore = reviewStore;
+        this._reviewActions = reviewActions;
     }
 
     _createClass(ReviewFormNextButtonController, [{
         key: 'tryGoNext',
         value: function tryGoNext() {
-            this._tabs.unlockTab(ReviewFormNextButtonController.tabId);
-
-            var tabsState = this._state.getParam('tabs');
-
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = tabsState[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var tab = _step.value;
-
-                    if (tab.id === ReviewFormNextButtonController.nextTabId) {
-                        if (tab.isUnlocked) {
-                            this._tabs.showTab(ReviewFormNextButtonController.nextTabId);
-                        }
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+            console.log('tryGoNext');
         }
     }]);
 
@@ -564,33 +392,35 @@ angular.module('reviewFormModule').controller('reviewFormNextButtonCtrl', Review
 // stateModule keeps all the app data.
 // -----------------------------------------------------------------------------
 
-angular.module('stateModule', ['observableModule']);
+angular.module('stateModule', ['observableModule', 'validatorModule']);
 'use strict';
 
 angular.module('stateModule').constant('initialReviewState', {
+    productTitle: null,
     currentStepId: null,
-    steps: [{
-        id: 'review',
-        isVisibleInMenu: false,
+    steps: new Map([['form', {
+        name: 'Step 1',
+        isVisibleInMenu: true,
         isUnlocked: false,
         isErrorVisible: false
-    }, {
-        id: 'socials',
+    }], ['socials', {
+        name: 'Step 2',
+        isVisibleInMenu: true,
+        isUnlocked: false
+    }], ['summary', {
+        name: 'Step 3',
+        isVisibleInMenu: true,
+        isUnlocked: false
+    }], ['final', {
+        name: null,
         isVisibleInMenu: false,
         isUnlocked: false
-    }, {
-        id: 'summary',
-        isVisibleInMenu: false,
-        isUnlocked: false
-    }, {
-        id: 'final',
-        isVisibleInMenu: false,
-        isUnlocked: false
-    }],
+    }]]),
     fields: {
         yourName: {
             value: null,
             isRequired: true,
+            validityType: 'text',
             isValid: null
         },
         title: {
@@ -598,14 +428,16 @@ angular.module('stateModule').constant('initialReviewState', {
             isRequired: false,
             isValid: null
         },
-        review: {
+        reviewText: {
             value: null,
             isRequired: true,
+            validityType: 'text',
             isValid: null
         },
         stars: {
             value: null,
             isRequired: true,
+            validityType: 'rating',
             isValid: null
         }
     },
@@ -630,38 +462,82 @@ var ReviewActionsService = function () {
     _createClass(ReviewActionsService, null, [{
         key: 'initClass',
         value: function initClass() {
-            ReviewActionsService.$inject = ['reviewStore'];
+            ReviewActionsService.$inject = ['reviewStore', 'validator'];
         }
     }]);
 
-    function ReviewActionsService(reviewStore) {
+    function ReviewActionsService(reviewStore, validator) {
         _classCallCheck(this, ReviewActionsService);
 
         this._reviewStore = reviewStore;
+        this._validator = validator;
     }
 
     _createClass(ReviewActionsService, [{
+        key: 'setProductTitle',
+        value: function setProductTitle(title) {
+            var state = this._reviewStore.getState();
+
+            state.productTitle = title;
+
+            this._reviewStore.setState(state);
+        }
+    }, {
         key: 'setField',
         value: function setField(fieldName, value) {
-            // set value
-            // validate
+            var state = this._reviewStore.getState();
+
+            if (typeof state.fields[fieldName] === 'undefined') {
+                throw new Error('Unknown field: "' + fieldName + '"!');
+            }
+
+            state.fields[fieldName].value = value;
+
+            if (state.fields[fieldName].isRequired) {
+                if (state.fields[fieldName].validityType === 'text') {
+                    state.fields[fieldName].isValid = this._validator.isNonEmptyString(value);
+                } else if (state.fields[fieldName].validityType === 'rating') {
+                    state.fields[fieldName].isValid = this._validator.isIntegerInRange(value, 1, 5);
+                }
+            }
             // set areFieldsValid by checking all fields
             // check unlock step two
+
+            this._reviewStore.setState(state);
         }
     }, {
         key: 'setSocial',
         value: function setSocial(socialName, isChecked) {
-            // set value
+            var state = this._reviewStore.getState();
+
+            if (typeof state.socials[socialName] === 'undefined') {
+                throw new Error('Unknown social: "' + socialName + '"!');
+            }
+
+            state.socials[socialName] = isChecked;
+
+            this._reviewStore.setState(state);
         }
     }, {
-        key: 'setReviewError',
-        value: function setReviewError() {
-            // set step one error
+        key: 'setFormError',
+        value: function setFormError(isErrored) {
+            var state = this._reviewStore.getState();
+            state.steps.get('form').isErrorVisible = isErrored;
+
+            this._reviewStore.setState(state);
         }
     }, {
         key: 'setCurrentStepId',
         value: function setCurrentStepId(stepId) {
-            // set current step id
+            var state = this._reviewStore.getState();
+
+            if (typeof state.steps.get(stepId) === 'undefined') {
+                throw new Error('Unknown step: "' + stepId + '"!');
+            }
+
+            state.currentStepId = stepId;
+
+            this._reviewStore.setState(state);
         }
     }]);
 
@@ -725,10 +601,10 @@ angular.module('stateModule').service('reviewStore', ReviewStoreService);
 'use strict';
 
 // -----------------------------------------------------------------------------
-// tabsModule is for displaying and managing tabs.
+// stepsModule is for displaying steps.
 // -----------------------------------------------------------------------------
 
-angular.module('tabsModule', ['stateModule']);
+angular.module('stepsModule', ['stateModule']);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -736,225 +612,39 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// tabs is a service for changing current and unlocking tabs.
+// stepsContentCtrl -- handles displaying steps content.
 // -----------------------------------------------------------------------------
 
-var TabsService = function () {
-    _createClass(TabsService, null, [{
+var StepsContentController = function () {
+    _createClass(StepsContentController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TabsService.initialTabsState = [{
-                id: 's1',
-                name: 'Step 1',
-                isUnlocked: false,
-                isVisible: false
-            }, {
-                id: 's2',
-                name: 'Step 2',
-                isUnlocked: false,
-                isVisible: false
-            }, {
-                id: 's3',
-                name: 'Step 3',
-                isUnlocked: false,
-                isVisible: false
-            }];
-
-            TabsService.$inject = ['state'];
+            StepsContentController.$inject = ['reviewStore'];
         }
     }]);
 
-    function TabsService(state) {
-        _classCallCheck(this, TabsService);
+    function StepsContentController(reviewStore) {
+        _classCallCheck(this, StepsContentController);
 
-        this._state = state;
-        // set initial tabs state
-        this._state.setParam('tabs', TabsService.initialTabsState);
-    }
-
-    _createClass(TabsService, [{
-        key: 'hideTabs',
-        value: function hideTabs() {
-            var currentState = this._state.get();
-            var tabsData = currentState.tabs;
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = tabsData[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var tab = _step.value;
-
-                    this._changeTabProperty(tab.id, 'isVisible', false);
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-        }
-    }, {
-        key: 'showTab',
-        value: function showTab(tabId) {
-            var currentState = this._state.get();
-            var tabsData = currentState.tabs;
-            var _iteratorNormalCompletion2 = true;
-            var _didIteratorError2 = false;
-            var _iteratorError2 = undefined;
-
-            try {
-                for (var _iterator2 = tabsData[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                    var tab = _step2.value;
-
-                    if (tab.id === tabId) {
-                        this._changeTabProperty(tab.id, 'isVisible', true);
-                    } else {
-                        this._changeTabProperty(tab.id, 'isVisible', false);
-                    }
-                }
-            } catch (err) {
-                _didIteratorError2 = true;
-                _iteratorError2 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                        _iterator2.return();
-                    }
-                } finally {
-                    if (_didIteratorError2) {
-                        throw _iteratorError2;
-                    }
-                }
-            }
-        }
-    }, {
-        key: 'lockTab',
-        value: function lockTab(tabId) {
-            this._changeTabProperty(tabId, 'isUnlocked', false);
-        }
-    }, {
-        key: 'unlockTab',
-        value: function unlockTab(tabId) {
-            this._changeTabProperty(tabId, 'isUnlocked', true);
-        }
-    }, {
-        key: '_changeTabProperty',
-        value: function _changeTabProperty(tabId, propertyName, propertyValue) {
-            var currentState = this._state.get();
-            var tabsData = currentState.tabs;
-            var _iteratorNormalCompletion3 = true;
-            var _didIteratorError3 = false;
-            var _iteratorError3 = undefined;
-
-            try {
-                for (var _iterator3 = tabsData[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-                    var tab = _step3.value;
-
-                    if (tab.id === tabId) {
-                        tab[propertyName] = propertyValue;
-                        break;
-                    }
-                }
-            } catch (err) {
-                _didIteratorError3 = true;
-                _iteratorError3 = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion3 && _iterator3.return) {
-                        _iterator3.return();
-                    }
-                } finally {
-                    if (_didIteratorError3) {
-                        throw _iteratorError3;
-                    }
-                }
-            }
-
-            this._state.setParam('tabs', tabsData);
-        }
-    }]);
-
-    return TabsService;
-}();
-
-TabsService.initClass();
-
-angular.module('tabsModule').service('tabs', TabsService);
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// tabsContentCtrl -- handles displaying tabs content.
-// -----------------------------------------------------------------------------
-
-var TabsContentController = function () {
-    _createClass(TabsContentController, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            TabsContentController.$inject = ['state'];
-        }
-    }]);
-
-    function TabsContentController(state) {
-        _classCallCheck(this, TabsContentController);
-
-        this._state = state;
-        this.areTabsVisible = {};
-        this._state.registerStateObserver(this._onStateChange.bind(this));
+        this.currentStepId = null;
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange();
+        this._onStateChange(reviewStore.getState());
     }
 
-    _createClass(TabsContentController, [{
+    _createClass(StepsContentController, [{
         key: '_onStateChange',
-        value: function _onStateChange() {
-            var tabsState = this._state.getParam('tabs');
-
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = tabsState[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var tab = _step.value;
-
-                    this.areTabsVisible[tab.id] = tab.isVisible;
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
+        value: function _onStateChange(state) {
+            this.currentStepId = state.currentStepId;
         }
     }]);
 
-    return TabsContentController;
+    return StepsContentController;
 }();
 
-TabsContentController.initClass();
+StepsContentController.initClass();
 
-angular.module('tabsModule').controller('tabsContentCtrl', TabsContentController);
+angular.module('stepsModule').controller('stepsContentCtrl', StepsContentController);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -962,49 +652,52 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// tabsMenuCtrl -- handles displaying tabs and changing current tab.
+// stepsMenuCtrl -- handles displaying tabs and changing current tab.
 // -----------------------------------------------------------------------------
 
-var TabsMenuController = function () {
-    _createClass(TabsMenuController, null, [{
+var StepsMenuController = function () {
+    _createClass(StepsMenuController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TabsMenuController.$inject = ['state', 'tabs'];
+            StepsMenuController.$inject = ['reviewStore', 'reviewActions'];
         }
     }]);
 
-    function TabsMenuController(state, tabs) {
-        _classCallCheck(this, TabsMenuController);
+    function StepsMenuController(reviewStore, reviewActions) {
+        _classCallCheck(this, StepsMenuController);
 
-        this._state = state;
-        this._tabs = tabs;
+        this._reviewActions = reviewActions;
 
-        this._state.registerStateObserver(this._onStateChange.bind(this));
+        this.options = [];
 
-        this.options = {};
-
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange();
+        this._onStateChange(reviewStore.getState());
     }
 
-    _createClass(TabsMenuController, [{
+    _createClass(StepsMenuController, [{
         key: '_onStateChange',
-        value: function _onStateChange() {
-            this.options = this._state.getParam('tabs');
-        }
-    }, {
-        key: 'showTab',
-        value: function showTab(tabId) {
-            this._tabs.showTab(tabId);
+        value: function _onStateChange(state) {
+            var _this = this;
+
+            this.options = [];
+
+            state.steps.forEach(function (stepData, stepId) {
+                stepData.id = stepId;
+                stepData.show = function () {
+                    _this._reviewActions.setCurrentStepId(stepId);
+                };
+                _this.options.push(stepData);
+            });
         }
     }]);
 
-    return TabsMenuController;
+    return StepsMenuController;
 }();
 
-TabsMenuController.initClass();
+StepsMenuController.initClass();
 
-angular.module('tabsModule').controller('tabsMenuCtrl', TabsMenuController);
+angular.module('stepsModule').controller('stepsMenuCtrl', StepsMenuController);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -1028,15 +721,15 @@ var TitleService = function () {
     _createClass(TitleService, null, [{
         key: 'initClass',
         value: function initClass() {
-            TitleService.$inject = ['state', 'urlParams'];
+            TitleService.$inject = ['reviewStore', 'reviewActions', 'urlParams'];
         }
     }]);
 
-    function TitleService(state, urlParams) {
+    function TitleService(reviewStore, reviewActions, urlParams) {
         _classCallCheck(this, TitleService);
 
         // set initial title state from url params
-        state.setParam('title', urlParams.getParam('product'));
+        reviewActions.setProductTitle(urlParams.getParam('product'));
     }
 
     return TitleService;
@@ -1059,26 +752,23 @@ var TitleController = function () {
     _createClass(TitleController, null, [{
         key: 'initClass',
         value: function initClass() {
-            TitleController.$inject = ['state'];
+            TitleController.$inject = ['reviewStore'];
         }
     }]);
 
-    function TitleController(state) {
+    function TitleController(reviewStore) {
         _classCallCheck(this, TitleController);
 
-        this._state = state;
-        this._state.registerStateObserver(this._onStateChange.bind(this));
-
         this.text = null;
-
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange();
+        this._onStateChange(reviewStore.getState());
     }
 
     _createClass(TitleController, [{
         key: '_onStateChange',
-        value: function _onStateChange() {
-            this.text = this._state.getParam('title');
+        value: function _onStateChange(state) {
+            this.text = state.productTitle;
         }
     }]);
 

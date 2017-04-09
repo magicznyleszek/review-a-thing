@@ -1,29 +1,29 @@
-describe('tabsMenuCtrl', () => {
-    let tabsMenuCtrl = null;
+describe('stepsMenuCtrl', () => {
+    let stepsMenuCtrl = null;
     let state = null;
 
     beforeEach(() => {
         module('testAppModule');
-        module('tabsModule');
+        module('stepsModule');
         inject(($injector, $controller) => {
-            tabsMenuCtrl = $controller('tabsMenuCtrl');
+            stepsMenuCtrl = $controller('stepsMenuCtrl');
             state = $injector.get('state');
         });
     });
 
     it('should get initial tabs state', () => {
-        expect(tabsMenuCtrl.options.length > 0).toBeTruthy();
+        expect(stepsMenuCtrl.options.length > 0).toBeTruthy();
     });
 
     it('should make only one tab visible with showTab', () => {
         const currentState = state.get();
 
-        tabsMenuCtrl.showTab(currentState.tabs[0].id);
-        expect(tabsMenuCtrl.options[0].isVisible).toBeTruthy();
-        expect(tabsMenuCtrl.options[1].isVisible).toBeFalsy();
+        stepsMenuCtrl.showTab(currentState.tabs[0].id);
+        expect(stepsMenuCtrl.options[0].isVisible).toBeTruthy();
+        expect(stepsMenuCtrl.options[1].isVisible).toBeFalsy();
 
-        tabsMenuCtrl.showTab(currentState.tabs[1].id);
-        expect(tabsMenuCtrl.options[0].isVisible).toBeFalsy();
-        expect(tabsMenuCtrl.options[1].isVisible).toBeTruthy();
+        stepsMenuCtrl.showTab(currentState.tabs[1].id);
+        expect(stepsMenuCtrl.options[0].isVisible).toBeFalsy();
+        expect(stepsMenuCtrl.options[1].isVisible).toBeTruthy();
     });
 });

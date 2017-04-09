@@ -4,7 +4,5 @@
 
 angular.module('reviewFormModule', [
     'fieldsModule',
-    'tabsModule'
+    'stateModule'
 ]);
-
-angular.module('reviewFormModule').run(['reviewFormChecker', angular.noop]);

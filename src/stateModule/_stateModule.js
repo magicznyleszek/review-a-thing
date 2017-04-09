@@ -3,5 +3,6 @@
 // -----------------------------------------------------------------------------
 
 angular.module('stateModule', [
-    'observableModule'
+    'observableModule',
+    'validatorModule'
 ]);

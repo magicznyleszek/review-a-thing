@@ -4,38 +4,19 @@
 
 class ReviewFormErrorController {
     static initClass() {
-        ReviewFormErrorController.tabId = 's1';
-        ReviewFormErrorController.$inject = ['state'];
+        ReviewFormErrorController.stepId = 'form';
+        ReviewFormErrorController.$inject = ['reviewStore'];
     }
 
-    constructor(state) {
-        this._state = state;
-        this.isVisible = false;
-        this._state.registerStateObserver(this._onStateChange.bind(this));
+    constructor(reviewStore) {
+        this.isVisible = null;
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
         // get initial state
-        this._onStateChange();
+        this._onStateChange(reviewStore.getState());
     }
 
-    _onStateChange() {
-        const tabsState = this._state.getParam('tabs');
-        for (const tab of tabsState) {
-            if (tab.id === ReviewFormErrorController.tabId) {
-                if (!tab.isUnlocked) {
-                    return;
-                }
-            }
-        }
-
-        const textFieldsState = this._state.getParam('textFields');
-        this.isVisible = false;
-        if (textFieldsState !== null) {
-            for (const fieldName of Object.keys(textFieldsState)) {
-                if (textFieldsState[fieldName].isValid === false) {
-                    this.isVisible = true;
-                    break;
-                }
-            }
-        }
+    _onStateChange(state) {
+        this.isVisible = state.steps.get('form').isErrorVisible;
     }
 }
 

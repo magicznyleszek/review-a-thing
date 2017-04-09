@@ -41,52 +41,39 @@ class TextFieldController {
             `;
         };
 
-        TextFieldController.$inject = ['$attrs', 'validator', 'state'];
+        TextFieldController.$inject = [
+            '$attrs',
+            'reviewStore',
+            'reviewActions'
+        ];
     }
 
-    constructor($attrs, validator, state) {
+    constructor($attrs, reviewStore, reviewActions) {
         if (typeof $attrs.name === 'undefined') {
             throw new Error('textField requires name attribute to work!');
         }
 
-        this._validator = validator;
-        this._state = state;
+        this._reviewActions = reviewActions;
 
         this.label = $attrs.label;
         this.name = $attrs.name;
         this.value = null;
         this.isRequired = typeof $attrs.required !== 'undefined';
         this.isValid = null;
+
+        reviewStore.registerStateObserver(this._onStateChange.bind(this));
+    }
+
+    _onStateChange(state) {
+        this.isValid = state.fields[this.name].isValid;
     }
 
     onChange() {
-        this._verifyValue();
-        this._saveValue();
+        this._reviewActions.setField(this.name, this.value);
     }
 
     onBlur() {
-        this._verifyValue();
-        this._saveValue();
-    }
-
-    _verifyValue() {
-        if (this.isRequired) {
-            this.isValid = this._validator.isNonEmptyString(this.value);
-        }
-    }
-
-    _saveValue() {
-        const currentState = this._state.get();
-        let textFieldsData = currentState.textFields;
-        if (typeof textFieldsData !== 'object') {
-            textFieldsData = {};
-        }
-        textFieldsData[this.name] = {
-            value: this.value,
-            isValid: this.isValid,
-            isRequired: this.isRequired
-        };
-        this._state.setParam('textFields', textFieldsData);
+        this._reviewActions.setField(this.name, this.value);
     }
 
     getValidModifier() {

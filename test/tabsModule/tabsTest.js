@@ -4,7 +4,7 @@ describe('tabs', () => {
 
     beforeEach(() => {
         module('testAppModule');
-        module('tabsModule');
+        module('stepsModule');
         inject(($injector) => {
             tabs = $injector.get('tabs');
             state = $injector.get('state');

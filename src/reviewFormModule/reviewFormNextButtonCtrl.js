@@ -1,33 +1,22 @@
 // -----------------------------------------------------------------------------
-// reviewFormNextButtonCtrl -- handles displaying error message.
+// reviewFormNextButtonCtrl -- handles a button for going to next step.
 // -----------------------------------------------------------------------------
 
 class ReviewFormNextButtonController {
     static initClass() {
-        ReviewFormNextButtonController.tabId = 's1';
-        ReviewFormNextButtonController.nextTabId = 's2';
-        ReviewFormNextButtonController.$inject = ['state', 'tabs'];
+        ReviewFormNextButtonController.$inject = [
+            'reviewStore',
+            'reviewActions'
+        ];
     }
 
-    constructor(state, tabs) {
-        this._state = state;
-        this._tabs = tabs;
+    constructor(reviewStore, reviewActions) {
+        this._reviewStore = reviewStore;
+        this._reviewActions = reviewActions;
     }
 
     tryGoNext() {
-        this._tabs.unlockTab(ReviewFormNextButtonController.tabId);
-
-        const tabsState = this._state.getParam('tabs');
-
-        for (const tab of tabsState) {
-            if (tab.id === ReviewFormNextButtonController.nextTabId) {
-                if (tab.isUnlocked) {
-                    this._tabs.showTab(
-                        ReviewFormNextButtonController.nextTabId
-                    );
-                }
-            }
-        }
+        console.log('tryGoNext');
     }
 }
 

@@ -1,0 +1,14 @@
+<menu i-card i-stepsMenu ng-controller="stepsMenuCtrl as stepsMenu" ng-cloak>
+    <div
+        i-stepsMenu-item
+        ng-repeat="step in stepsMenu.options track by step.id"
+        ng-show="step.isVisibleInMenu"
+    >
+        <button
+            i-stepsMenu-button
+            ng-click="step.show()"
+            ng-bind="::step.name"
+            {% comment %}ng-disabled="!step.isUnlocked"{% endcomment %}
+        ></button>
+    </div>
+</menu>
