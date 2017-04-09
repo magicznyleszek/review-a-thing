@@ -15,5 +15,6 @@ app styles aggregation
 @import "common/button.css";
 @import "common/card.css";
 @import "common/text.css";
+@import "fieldsModule/checkboxField.css";
 @import "fieldsModule/textField.css";
 @import "stepsModule/stepsMenu.css";

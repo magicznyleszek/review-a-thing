@@ -3,8 +3,6 @@ button module
 *******************************************************************************/
 
 :root {
-    --s-button-fontsize: 0.75rem;
-    --s-button-padding: 0.5rem;
     --s-button-verticalMargin: 0.125rem;
 
     --c-button-txt: var(--c-watercourse);
@@ -20,21 +18,18 @@ button module
     margin: 0;
     border: 0;
     border-radius: var(--s-global-br);
-    padding-top: 0;
-    padding-bottom: 0;
-    padding-left: var(--s-button-padding);
-    padding-right: var(--s-button-padding);
+    padding: 0 var(--s-leading);
     height: auto;
     /* we want the button to fit into leading size with breathing space */
-    min-height: calc(var(--s-leading) - calc(var(--s-button-verticalMargin) * 2));
+    min-height: calc((var(--s-leading) * 2) - var(--s-button-verticalMargin) * 2);
     outline: 0;
     cursor: pointer;
     background-image: none;
-    font-size: var(--s-button-fontsize);
+    font-size: 1.5rem;
     font-weight: 700;
     font-family: inherit;
     /* adjust line-height to adjusted height */
-    line-height: calc(var(--s-leading) - calc(var(--s-button-verticalMargin) * 2));
+    line-height: calc((var(--s-leading) * 2) - var(--s-button-verticalMargin) * 2);
     text-align: center;
     text-decoration: none;
 }
@@ -65,6 +60,10 @@ button module
     vertical-align: middle;
 }
 
+[i-button~="full"] {
+    width: 100%;
+}
+
 /*******************************************************************************
 button colors
 *******************************************************************************/
@@ -89,20 +88,4 @@ button colors
 [i-button~="active"]:not([disabled]) {
     background-color: var(--c-button-bg-hover);
     color: var(--c-button-txt);
-}
-
-/*******************************************************************************
-button sizes
-*******************************************************************************/
-
-[i-button~="double"] {
-    padding-left: calc(var(--s-button-padding) * 2);
-    padding-right: calc(var(--s-button-padding) * 2);
-    min-height: calc(var(--s-leading) * 2 - calc(var(--s-button-verticalMargin) * 2));
-    font-size: calc(var(--s-button-fontsize) * 2);
-    line-height: calc((var(--s-leading) - var(--s-button-verticalMargin)) * 2);
-}
-
-[i-button~="full"] {
-    width: 100%;
 }

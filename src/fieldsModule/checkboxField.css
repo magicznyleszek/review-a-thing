@@ -1,0 +1,19 @@
+/*******************************************************************************
+checkboxField module
+*******************************************************************************/
+
+[i-checkboxField] {
+    display: block;
+    padding: calc(var(--s-leading) * 0.5) 0;
+}
+
+[i-checkboxField-input]:checked::after {
+    content: "\2713";
+}
+
+[i-checkboxField-input] {
+    display: inline-block;
+    border-radius: var(--s-global-br);
+    padding: calc(var(--s-leading) * 0.5);
+    background-color: color(var(--c-watercourse) alpha(10%));
+}
