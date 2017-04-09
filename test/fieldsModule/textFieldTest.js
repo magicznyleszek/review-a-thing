@@ -64,20 +64,22 @@ describe('textField', () => {
         expect(state.fields.title.value).toBe('Aladdin');
     });
 
-    it('should get "valid" modifier for valid field', () => {
-        const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        compCtrl._isValid = true;
-        expect(compCtrl.getValidModifier()).toBe('valid');
-    });
+    describe('getValidModifier', () => {
+        it('should return "valid" for valid field', () => {
+            const compCtrl = getComponentCtrl({name: 'title', required: ''});
+            compCtrl._isValid = true;
+            expect(compCtrl.getValidModifier()).toBe('valid');
+        });
 
-    it('should get "error" modifier for invalid field', () => {
-        const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        compCtrl._isValid = false;
-        expect(compCtrl.getValidModifier()).toBe('error');
-    });
+        it('should return "error" for invalid field', () => {
+            const compCtrl = getComponentCtrl({name: 'title', required: ''});
+            compCtrl._isValid = false;
+            expect(compCtrl.getValidModifier()).toBe('error');
+        });
 
-    it('should get empty string modifier for virgin field', () => {
-        const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        expect(compCtrl.getValidModifier()).toBe('');
+        it('should return empty string for virgin field', () => {
+            const compCtrl = getComponentCtrl({name: 'title', required: ''});
+            expect(compCtrl.getValidModifier()).toBe('');
+        });
     });
 });
