@@ -1,39 +1,23 @@
 describe('reviewFormErrorCtrl', () => {
     let reviewFormErrorCtrl = null;
-    let state = null;
+    let reviewActions = null;
 
     beforeEach(() => {
         module('testAppModule');
         module('reviewFormModule');
         inject(($injector, $controller) => {
             reviewFormErrorCtrl = $controller('reviewFormErrorCtrl');
-            state = $injector.get('state');
+            reviewActions = $injector.get('reviewActions');
         });
     });
 
-    it('should be visible if any field from state is invalid', () => {
-        state.setParam('textFields', {
-            fieldOne: {isValid: false, value: ''}
-        });
-
+    it('should be visible if state property is true', () => {
+        reviewActions.setFormError(true);
         expect(reviewFormErrorCtrl.isVisible).toBeTruthy();
     });
 
-    it('should be hidden if all fields from state are valid', () => {
-        state.setParam('textFields', {
-            foo: {isValid: true, value: 'abc'},
-            bar: {isValid: true, value: 'qwerty'}
-        });
-
-        expect(reviewFormErrorCtrl.isVisible).toBeFalsy();
-    });
-
-    it('should be hidden if all fields from state are virgin', () => {
-        state.setParam('textFields', {
-            foo: {isValid: null, value: ''},
-            bar: {isValid: null, value: ''}
-        });
-
+    it('should be hidden if state property is false', () => {
+        reviewActions.setFormError(false);
         expect(reviewFormErrorCtrl.isVisible).toBeFalsy();
     });
 });

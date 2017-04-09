@@ -1,5 +1,5 @@
 describe('titleCtrl', () => {
-    let state = null;
+    let reviewActions = null;
     let titleCtrl = null;
 
     beforeEach(() => {
@@ -7,12 +7,12 @@ describe('titleCtrl', () => {
         module('titleModule');
         inject(($injector, $controller) => {
             titleCtrl = $controller('titleCtrl');
-            state = $injector.get('state');
+            reviewActions = $injector.get('reviewActions');
         });
     });
 
     it('should use title from state', () => {
-        state.setParam('title', 'Silent Running');
+        reviewActions.setProductTitle('Silent Running');
         expect(titleCtrl.text).toBe('Silent Running');
     });
 });

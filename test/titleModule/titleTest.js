@@ -1,6 +1,6 @@
 describe('title', () => {
     // Note: title service is initialized by modules run function
-    let state = null;
+    let reviewStore = null;
     const urlParamsMock = {
         getParam(paramName) {
             if (paramName === 'product') {
@@ -18,11 +18,12 @@ describe('title', () => {
             $provide.value('urlParams', urlParamsMock);
         });
         inject(($injector) => {
-            state = $injector.get('state');
+            reviewStore = $injector.get('reviewStore');
         });
     });
 
     it('should set title in state from url parameter', () => {
-        expect(state.getParam('title')).toBe('Conan the Barbarian');
+        const state = reviewStore.getState();
+        expect(state.productTitle).toBe('Conan the Barbarian');
     });
 });
