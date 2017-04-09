@@ -64,33 +64,15 @@ describe('textField', () => {
         expect(state.fields.title.value).toBe('Aladdin');
     });
 
-    it('should set isValid to false for empty required field', () => {
-        const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        compCtrl.value = '';
-        compCtrl.onChange();
-        const state = appStore.getState();
-        expect(state.fields.title.isValid).toBe(false);
-    });
-
-    it('should set isValid to true for good required field', () => {
-        const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        compCtrl.value = 'I am a proper thing!';
-        compCtrl.onChange();
-        const state = appStore.getState();
-        expect(state.fields.title.isValid).toBe(true);
-    });
-
     it('should get "valid" modifier for valid field', () => {
         const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        compCtrl.value = 'I work';
-        compCtrl.onChange();
+        compCtrl._isValid = true;
         expect(compCtrl.getValidModifier()).toBe('valid');
     });
 
     it('should get "error" modifier for invalid field', () => {
         const compCtrl = getComponentCtrl({name: 'title', required: ''});
-        compCtrl.value = '';
-        compCtrl.onChange();
+        compCtrl._isValid = false;
         expect(compCtrl.getValidModifier()).toBe('error');
     });
 

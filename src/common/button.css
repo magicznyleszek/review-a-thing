@@ -102,3 +102,7 @@ button sizes
     font-size: calc(var(--s-button-fontsize) * 2);
     line-height: calc((var(--s-leading) - var(--s-button-verticalMargin)) * 2);
 }
+
+[i-button~="full"] {
+    width: 100%;
+}

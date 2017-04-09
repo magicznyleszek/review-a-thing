@@ -16,7 +16,22 @@ class ReviewFormNextButtonController {
     }
 
     tryGoNext() {
-        console.log('tryGoNext');
+        const state = this._appStore.getState();
+
+        let areAllRequiredFieldsValid = true;
+
+        for (const fieldName of Object.keys(state.fields)) {
+            if (state.fields[fieldName].isValid !== true) {
+                areAllRequiredFieldsValid = false
+                break;
+            }
+        }
+
+        if (areAllRequiredFieldsValid) {
+            this._appActions.setCurrentStepId('socials');
+        } else {
+            this._appActions.setReviewError(true);
+        }
     }
 }
 

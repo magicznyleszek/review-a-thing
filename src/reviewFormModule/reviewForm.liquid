@@ -14,14 +14,14 @@
     <text-field label="Title" name="title"></text-field>
 
     <text-field label="Review" name="reviewText" multiline required></text-field>
+</div>
 
-    <div i-text="centered">
-        <button
-            i-button="double"
-            ng-controller="reviewFormNextButtonCtrl as nextButton"
-            ng-click="nextButton.tryGoNext()"
-        >
-            Next
-        </button>
-    </div>
+<div i-text="centered">
+    <button
+        i-button="double full"
+        ng-controller="reviewFormNextButtonCtrl as nextButton"
+        ng-click="nextButton.tryGoNext()"
+    >
+        Next
+    </button>
 </div>

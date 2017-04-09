@@ -59,13 +59,13 @@ class TextFieldController {
         this.name = $attrs.name;
         this.value = null;
         this.isRequired = typeof $attrs.required !== 'undefined';
-        this.isValid = null;
+        this._isValid = null;
 
         appStore.registerStateObserver(this._onStateChange.bind(this));
     }
 
     _onStateChange(state) {
-        this.isValid = state.fields[this.name].isValid;
+        this._isValid = state.fields[this.name].isValid;
     }
 
     onChange() {
@@ -77,9 +77,9 @@ class TextFieldController {
     }
 
     getValidModifier() {
-        if (this.isValid === true) {
+        if (this._isValid === true) {
             return 'valid';
-        } else if (this.isValid === false) {
+        } else if (this._isValid === false) {
             return 'error';
         } else {
             return '';

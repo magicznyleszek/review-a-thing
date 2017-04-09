@@ -76,7 +76,7 @@ var TextFieldController = function () {
         this.name = $attrs.name;
         this.value = null;
         this.isRequired = typeof $attrs.required !== 'undefined';
-        this.isValid = null;
+        this._isValid = null;
 
         appStore.registerStateObserver(this._onStateChange.bind(this));
     }
@@ -84,7 +84,7 @@ var TextFieldController = function () {
     _createClass(TextFieldController, [{
         key: '_onStateChange',
         value: function _onStateChange(state) {
-            this.isValid = state.fields[this.name].isValid;
+            this._isValid = state.fields[this.name].isValid;
         }
     }, {
         key: 'onChange',
@@ -99,9 +99,9 @@ var TextFieldController = function () {
     }, {
         key: 'getValidModifier',
         value: function getValidModifier() {
-            if (this.isValid === true) {
+            if (this._isValid === true) {
                 return 'valid';
-            } else if (this.isValid === false) {
+            } else if (this._isValid === false) {
                 return 'error';
             } else {
                 return '';
@@ -376,7 +376,43 @@ var ReviewFormNextButtonController = function () {
     _createClass(ReviewFormNextButtonController, [{
         key: 'tryGoNext',
         value: function tryGoNext() {
-            console.log('tryGoNext');
+            var state = this._appStore.getState();
+
+            var areAllRequiredFieldsValid = true;
+
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = Object.keys(state.fields)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var fieldName = _step.value;
+
+                    if (state.fields[fieldName].isValid !== true) {
+                        areAllRequiredFieldsValid = false;
+                        break;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            if (areAllRequiredFieldsValid) {
+                this._appActions.setCurrentStepId('socials');
+            } else {
+                this._appActions.setReviewError(true);
+            }
         }
     }]);
 
@@ -439,17 +475,63 @@ var appActionsService = function () {
 
             state.fields[fieldName].value = value;
 
-            if (state.fields[fieldName].isRequired) {
-                if (state.fields[fieldName].validityType === 'text') {
-                    state.fields[fieldName].isValid = this._validator.isNonEmptyString(value);
-                } else if (state.fields[fieldName].validityType === 'rating') {
-                    state.fields[fieldName].isValid = this._validator.isIntegerInRange(value, 1, 5);
-                }
-            }
             // set areFieldsValid by checking all fields
             // check unlock step two
 
             this._appStore.setState(state);
+
+            this._validateField(fieldName);
+        }
+    }, {
+        key: '_validateField',
+        value: function _validateField(fieldName) {
+            var state = this._appStore.getState();
+            var field = state.fields[fieldName];
+
+            if (typeof field === 'undefined') {
+                throw new Error('Unknown field: "' + fieldName + '"!');
+            }
+
+            if (field.isRequired) {
+                if (field.validityType === 'text') {
+                    field.isValid = this._validator.isNonEmptyString(field.value);
+                } else if (field.validityType === 'rating') {
+                    field.isValid = this._validator.isIntegerInRange(field.value, 1, 5);
+                }
+            } else {
+                field.isValid = true;
+            }
+
+            this._appStore.setState(state);
+        }
+    }, {
+        key: '_validateAllFields',
+        value: function _validateAllFields() {
+            var state = this._appStore.getState();
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+                for (var _iterator = Object.keys(state.fields)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var fieldName = _step.value;
+
+                    this._validateField(fieldName);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator.return) {
+                        _iterator.return();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
         }
     }, {
         key: 'setSocial',
@@ -465,12 +547,14 @@ var appActionsService = function () {
             this._appStore.setState(state);
         }
     }, {
-        key: 'setFormError',
-        value: function setFormError(isErrored) {
+        key: 'setReviewError',
+        value: function setReviewError(isErrored) {
             var state = this._appStore.getState();
             state.steps.get('review').isErrorVisible = isErrored;
 
             this._appStore.setState(state);
+
+            this._validateAllFields();
         }
     }, {
         key: 'setCurrentStepId',
