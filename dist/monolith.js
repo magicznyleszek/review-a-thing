@@ -5,7 +5,7 @@
 // productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', ['titleModule', 'stepsModule', 'reviewFormModule']);
+angular.module('productReviewAppModule', ['titleModule', 'stepsModule', 'reviewFormModule', 'socialFormModule', 'summaryModule']);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -30,6 +30,63 @@ angular.module('productReviewAppModule').config(['$interpolateProvider', '$compi
 // -----------------------------------------------------------------------------
 
 angular.module('fieldsModule', ['stateModule', 'validatorModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// checkboxField component with such attr-options as:
+// - name (required attribute)
+// - label (required attribute)
+// -----------------------------------------------------------------------------
+
+var CheckboxFieldController = function () {
+    _createClass(CheckboxFieldController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            CheckboxFieldController.getTemplate = function () {
+                return '\n                <label i-checkboxField>\n                    <span i-checkboxField-label ng-bind="::$ctrl.label"></span>\n\n                    <input\n                        i-checkboxField-input\n                        type="checkbox"\n                        ng-model="$ctrl.value"\n                        ng-change="$ctrl.onChange()"\n                    >\n                </label>\n            ';
+            };
+
+            CheckboxFieldController.$inject = ['$attrs', 'appStore', 'appActions'];
+        }
+    }]);
+
+    function CheckboxFieldController($attrs, appStore, appActions) {
+        _classCallCheck(this, CheckboxFieldController);
+
+        if (typeof $attrs.name === 'undefined') {
+            throw new Error('checkboxField requires name attribute to work!');
+        }
+        if (typeof $attrs.label === 'undefined') {
+            throw new Error('checkboxField requires label attribute to work!');
+        }
+
+        this._appActions = appActions;
+
+        this.label = $attrs.label;
+        this.name = $attrs.name;
+        this.value = null;
+    }
+
+    _createClass(CheckboxFieldController, [{
+        key: 'onChange',
+        value: function onChange() {
+            this._appActions.setField(this.name, this.value);
+        }
+    }]);
+
+    return CheckboxFieldController;
+}();
+
+CheckboxFieldController.initClass();
+
+angular.module('fieldsModule').component('checkboxField', {
+    controller: CheckboxFieldController,
+    template: CheckboxFieldController.getTemplate
+});
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -510,6 +567,50 @@ angular.module('reviewFormModule').controller('reviewFormNextButtonCtrl', Review
 'use strict';
 
 // -----------------------------------------------------------------------------
+// socialFormModule is for managing social form inputs.
+// -----------------------------------------------------------------------------
+
+angular.module('socialFormModule', ['fieldsModule', 'stateModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// socialFormNextButtonCtrl -- handles a button for going to next step.
+// -----------------------------------------------------------------------------
+
+var SocialFormNextButtonController = function () {
+    _createClass(SocialFormNextButtonController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            SocialFormNextButtonController.$inject = ['appActions'];
+        }
+    }]);
+
+    function SocialFormNextButtonController(appActions) {
+        _classCallCheck(this, SocialFormNextButtonController);
+
+        this._appActions = appActions;
+    }
+
+    _createClass(SocialFormNextButtonController, [{
+        key: 'tryGoNext',
+        value: function tryGoNext() {
+            this._appActions.setCurrentStepId('summary');
+        }
+    }]);
+
+    return SocialFormNextButtonController;
+}();
+
+SocialFormNextButtonController.initClass();
+
+angular.module('socialFormModule').controller('socialFormNextButtonCtrl', SocialFormNextButtonController);
+'use strict';
+
+// -----------------------------------------------------------------------------
 // stateModule keeps all the app data.
 // -----------------------------------------------------------------------------
 
@@ -759,12 +860,22 @@ angular.module('stateModule').constant('initialAppState', {
             isRequired: true,
             validityType: 'rating',
             isValid: null
+        },
+        facebook: {
+            value: false,
+            isRequired: false,
+            isValid: false
+        },
+        twitter: {
+            value: false,
+            isRequired: false,
+            isValid: false
+        },
+        linkedIn: {
+            value: false,
+            isRequired: false,
+            isValid: false
         }
-    },
-    socials: {
-        facebook: null,
-        twitter: null,
-        linkedIn: null
     }
 });
 'use strict';
@@ -867,6 +978,88 @@ var StepsMenuController = function () {
 StepsMenuController.initClass();
 
 angular.module('stepsModule').controller('stepsMenuCtrl', StepsMenuController);
+'use strict';
+
+// -----------------------------------------------------------------------------
+// summaryModule is for displaying summary.
+// -----------------------------------------------------------------------------
+
+angular.module('summaryModule', ['stateModule']);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// publishButtonCtrl -- handles a button for going to final step.
+// -----------------------------------------------------------------------------
+
+var PublishButtonController = function () {
+    _createClass(PublishButtonController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            PublishButtonController.$inject = ['appActions'];
+        }
+    }]);
+
+    function PublishButtonController(appActions) {
+        _classCallCheck(this, PublishButtonController);
+
+        this._appActions = appActions;
+    }
+
+    _createClass(PublishButtonController, [{
+        key: 'publish',
+        value: function publish() {
+            this._appActions.setCurrentStepId('final');
+        }
+    }]);
+
+    return PublishButtonController;
+}();
+
+PublishButtonController.initClass();
+
+angular.module('summaryModule').controller('publishButtonCtrl', PublishButtonController);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// summaryCtrl -- handles displaying steps content.
+// -----------------------------------------------------------------------------
+
+var SummaryController = function () {
+    _createClass(SummaryController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            SummaryController.$inject = ['appStore'];
+        }
+    }]);
+
+    function SummaryController(appStore) {
+        _classCallCheck(this, SummaryController);
+
+        this.state = appStore.getState();
+        appStore.registerStateObserver(this._onStateChange.bind(this));
+    }
+
+    _createClass(SummaryController, [{
+        key: '_onStateChange',
+        value: function _onStateChange(state) {
+            this.state = state;
+        }
+    }]);
+
+    return SummaryController;
+}();
+
+SummaryController.initClass();
+
+angular.module('summaryModule').controller('summaryCtrl', SummaryController);
 'use strict';
 
 // -----------------------------------------------------------------------------

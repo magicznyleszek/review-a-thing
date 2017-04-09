@@ -47,11 +47,21 @@ angular.module('stateModule').constant('initialAppState', {
             isRequired: true,
             validityType: 'rating',
             isValid: null
+        },
+        facebook: {
+            value: false,
+            isRequired: false,
+            isValid: false
+        },
+        twitter: {
+            value: false,
+            isRequired: false,
+            isValid: false
+        },
+        linkedIn: {
+            value: false,
+            isRequired: false,
+            isValid: false
         }
-    },
-    socials: {
-        facebook: null,
-        twitter: null,
-        linkedIn: null
     }
 });

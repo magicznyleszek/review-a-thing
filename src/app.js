@@ -5,5 +5,7 @@
 angular.module('productReviewAppModule', [
     'titleModule',
     'stepsModule',
-    'reviewFormModule'
+    'reviewFormModule',
+    'socialFormModule',
+    'summaryModule'
 ]);

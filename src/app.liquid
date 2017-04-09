@@ -13,15 +13,15 @@
         </div>
 
         <div ng-show="stepsContent.currentStepId === 'socials'">
-            step 2 content
+            {% include socialFormModule/socialForm.liquid %}
         </div>
 
         <div ng-show="stepsContent.currentStepId === 'summary'">
-            step 3 content
+            {% include summaryModule/summary.liquid %}
         </div>
 
-        <div ng-show="stepsContent.currentStepId === 'final'">
-            Thank you!
+        <div i-card ng-show="stepsContent.currentStepId === 'final'">
+            Your review has been published successfully!
         </div>
     </div>
 

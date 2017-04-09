@@ -1,0 +1,29 @@
+<div i-card ng-controller="summaryCtrl as summary">
+    <h1>Preview Review</h1>
+
+    <div ng-bind="summary.state.fields.stars.value"></div>
+
+    Reviewer:
+    <div ng-bind="summary.state.fields.yourName.value"></div>
+    <div
+        ng-show="summary.state.fields.title.value"
+        ng-bind="summary.state.fields.title.value"
+    ></div>
+    <div ng-bind="summary.state.fields.reviewText.value"></div>
+
+    Share on:
+    <div ng-show="summary.state.fields.facebook.value">Facebook</div>
+    <div ng-show="summary.state.fields.twitter.value">Twitter</div>
+    <div ng-show="summary.state.fields.linkedIn.value">LinkedIn</div>
+
+</div>
+
+<div i-text="centered">
+    <button
+        i-button="double full"
+        ng-controller="publishButtonCtrl as publishButton"
+        ng-click="publishButton.publish()"
+    >
+        Publish
+    </button>
+</div>
