@@ -37,6 +37,91 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
+// starsField component with such attr-options as:
+// - name (required attribute)
+// - label
+// - required
+// -----------------------------------------------------------------------------
+
+var StarsFieldController = function () {
+    _createClass(StarsFieldController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            StarsFieldController.getTemplate = function () {
+                return '\n                <label i-starsField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?\'required\':\'\']]">\n                    <span\n                        i-starsField-label\n                        ng-if="::$ctrl.label"\n                        ng-bind="::$ctrl.label"\n                    ></span>\n\n                    <button\n                        ng-repeat="number in [1, 2, 3, 4, 5]"\n                        i-starsField-star\n                        ng-click="$ctrl.setValue(number)"\n                        ng-bind="$ctrl.getStarText(number)"\n                    ></button>\n                </label>\n            ';
+            };
+
+            StarsFieldController.$inject = ['$attrs', 'appStore', 'appActions'];
+        }
+    }]);
+
+    function StarsFieldController($attrs, appStore, appActions) {
+        _classCallCheck(this, StarsFieldController);
+
+        if (typeof $attrs.name === 'undefined') {
+            throw new Error('starsField requires name attribute to work!');
+        }
+
+        this._appActions = appActions;
+
+        this.label = $attrs.label;
+        this.name = $attrs.name;
+        this.value = null;
+        this.isRequired = typeof $attrs.required !== 'undefined';
+        this._isValid = null;
+
+        appStore.registerStateObserver(this._onStateChange.bind(this));
+    }
+
+    _createClass(StarsFieldController, [{
+        key: '_onStateChange',
+        value: function _onStateChange(state) {
+            this._isValid = state.fields[this.name].isValid;
+        }
+    }, {
+        key: 'setValue',
+        value: function setValue(number) {
+            this.value = number;
+            this._appActions.setField(this.name, this.value);
+        }
+    }, {
+        key: 'getStarText',
+        value: function getStarText(number) {
+            if (number > this.value) {
+                return '☆';
+            } else {
+                return '★';
+            }
+        }
+    }, {
+        key: 'getValidModifier',
+        value: function getValidModifier() {
+            if (this._isValid === true) {
+                return 'valid';
+            } else if (this._isValid === false) {
+                return 'error';
+            } else {
+                return '';
+            }
+        }
+    }]);
+
+    return StarsFieldController;
+}();
+
+StarsFieldController.initClass();
+
+angular.module('fieldsModule').component('starsField', {
+    controller: StarsFieldController,
+    template: StarsFieldController.getTemplate
+});
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
 // textField component with such attr-options as:
 // - name (required attribute)
 // - label
