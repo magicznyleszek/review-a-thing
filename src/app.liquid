@@ -10,14 +10,24 @@
     <div ng-controller="stepsContentCtrl as stepsContent">
         <div ng-show="stepsContent.currentStepId === 'review'">
             {% include reviewFormModule/reviewForm.liquid %}
+
+            {% include stepsModule/nextStepButton.liquid label="Next" %}
         </div>
 
         <div ng-show="stepsContent.currentStepId === 'socials'">
-            {% include socialFormModule/socialForm.liquid %}
+            <div i-card>
+                <checkbox-field label="Facebook" name="facebook"></checkbox-field>
+                <checkbox-field label="Twitter" name="twitter"></checkbox-field>
+                <checkbox-field label="LinkedIn" name="linkedIn"></checkbox-field>
+            </div>
+
+            {% include stepsModule/nextStepButton.liquid label="Next" %}
         </div>
 
         <div ng-show="stepsContent.currentStepId === 'summary'">
             {% include summaryModule/summary.liquid %}
+
+            {% include stepsModule/nextStepButton.liquid label="Publish" %}
         </div>
 
         <div i-card ng-show="stepsContent.currentStepId === 'final'">

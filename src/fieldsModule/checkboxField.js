@@ -9,14 +9,14 @@ class CheckboxFieldController {
         CheckboxFieldController.getTemplate = () => {
             return `
                 <label i-checkboxField>
-                    <span i-checkboxField-label ng-bind="::$ctrl.label"></span>
-
                     <input
                         i-checkboxField-input
                         type="checkbox"
                         ng-model="$ctrl.value"
                         ng-change="$ctrl.onChange()"
                     >
+
+                    <span i-checkboxField-label ng-bind="::$ctrl.label"></span>
                 </label>
             `;
         };

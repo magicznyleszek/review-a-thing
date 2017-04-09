@@ -5,7 +5,7 @@
 // productReviewAppModule is our single ngApp module for whole web app
 // -----------------------------------------------------------------------------
 
-angular.module('productReviewAppModule', ['titleModule', 'stepsModule', 'reviewFormModule', 'socialFormModule', 'summaryModule']);
+angular.module('productReviewAppModule', ['fieldsModule', 'titleModule', 'stepsModule', 'reviewFormModule', 'summaryModule']);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -47,7 +47,7 @@ var CheckboxFieldController = function () {
         key: 'initClass',
         value: function initClass() {
             CheckboxFieldController.getTemplate = function () {
-                return '\n                <label i-checkboxField>\n                    <span i-checkboxField-label ng-bind="::$ctrl.label"></span>\n\n                    <input\n                        i-checkboxField-input\n                        type="checkbox"\n                        ng-model="$ctrl.value"\n                        ng-change="$ctrl.onChange()"\n                    >\n                </label>\n            ';
+                return '\n                <label i-checkboxField>\n                    <input\n                        i-checkboxField-input\n                        type="checkbox"\n                        ng-model="$ctrl.value"\n                        ng-change="$ctrl.onChange()"\n                    >\n\n                    <span i-checkboxField-label ng-bind="::$ctrl.label"></span>\n                </label>\n            ';
             };
 
             CheckboxFieldController.$inject = ['$attrs', 'appStore', 'appActions'];
@@ -492,124 +492,6 @@ ReviewFormErrorController.initClass();
 angular.module('reviewFormModule').controller('reviewFormErrorCtrl', ReviewFormErrorController);
 'use strict';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// reviewFormNextButtonCtrl -- handles a button for going to next step.
-// -----------------------------------------------------------------------------
-
-var ReviewFormNextButtonController = function () {
-    _createClass(ReviewFormNextButtonController, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            ReviewFormNextButtonController.$inject = ['appStore', 'appActions'];
-        }
-    }]);
-
-    function ReviewFormNextButtonController(appStore, appActions) {
-        _classCallCheck(this, ReviewFormNextButtonController);
-
-        this._appStore = appStore;
-        this._appActions = appActions;
-    }
-
-    _createClass(ReviewFormNextButtonController, [{
-        key: 'tryGoNext',
-        value: function tryGoNext() {
-            var state = this._appStore.getState();
-
-            var areAllRequiredFieldsValid = true;
-
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = Object.keys(state.fields)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var fieldName = _step.value;
-
-                    if (state.fields[fieldName].isRequired && state.fields[fieldName].isValid !== true) {
-                        areAllRequiredFieldsValid = false;
-                        break;
-                    }
-                }
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            if (areAllRequiredFieldsValid) {
-                this._appActions.setCurrentStepId('socials');
-            } else {
-                this._appActions.setReviewError(true);
-            }
-        }
-    }]);
-
-    return ReviewFormNextButtonController;
-}();
-
-ReviewFormNextButtonController.initClass();
-
-angular.module('reviewFormModule').controller('reviewFormNextButtonCtrl', ReviewFormNextButtonController);
-'use strict';
-
-// -----------------------------------------------------------------------------
-// socialFormModule is for managing social form inputs.
-// -----------------------------------------------------------------------------
-
-angular.module('socialFormModule', ['fieldsModule', 'stateModule']);
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// socialFormNextButtonCtrl -- handles a button for going to next step.
-// -----------------------------------------------------------------------------
-
-var SocialFormNextButtonController = function () {
-    _createClass(SocialFormNextButtonController, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            SocialFormNextButtonController.$inject = ['appActions'];
-        }
-    }]);
-
-    function SocialFormNextButtonController(appActions) {
-        _classCallCheck(this, SocialFormNextButtonController);
-
-        this._appActions = appActions;
-    }
-
-    _createClass(SocialFormNextButtonController, [{
-        key: 'tryGoNext',
-        value: function tryGoNext() {
-            this._appActions.setCurrentStepId('summary');
-        }
-    }]);
-
-    return SocialFormNextButtonController;
-}();
-
-SocialFormNextButtonController.initClass();
-
-angular.module('socialFormModule').controller('socialFormNextButtonCtrl', SocialFormNextButtonController);
-'use strict';
-
 // -----------------------------------------------------------------------------
 // stateModule keeps all the app data.
 // -----------------------------------------------------------------------------
@@ -650,6 +532,11 @@ var appActionsService = function () {
 
             this._appStore.setState(state);
         }
+
+        // -------------------------------------------------------------------------
+        // managing fields
+        // -------------------------------------------------------------------------
+
     }, {
         key: 'setField',
         value: function setField(fieldName, value) {
@@ -666,11 +553,11 @@ var appActionsService = function () {
 
             this._appStore.setState(state);
 
-            this._validateField(fieldName);
+            this.validateField(fieldName);
         }
     }, {
-        key: '_validateField',
-        value: function _validateField(fieldName) {
+        key: 'validateField',
+        value: function validateField(fieldName) {
             var state = this._appStore.getState();
             var field = state.fields[fieldName];
 
@@ -691,8 +578,8 @@ var appActionsService = function () {
             this._appStore.setState(state);
         }
     }, {
-        key: '_validateAllFields',
-        value: function _validateAllFields() {
+        key: 'validateAllFields',
+        value: function validateAllFields() {
             var state = this._appStore.getState();
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
@@ -702,7 +589,7 @@ var appActionsService = function () {
                 for (var _iterator = Object.keys(state.fields)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var fieldName = _step.value;
 
-                    this._validateField(fieldName);
+                    this.validateField(fieldName);
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -720,19 +607,6 @@ var appActionsService = function () {
             }
         }
     }, {
-        key: 'setSocial',
-        value: function setSocial(socialName, isChecked) {
-            var state = this._appStore.getState();
-
-            if (typeof state.socials[socialName] === 'undefined') {
-                throw new Error('Unknown social: "' + socialName + '"!');
-            }
-
-            state.socials[socialName] = isChecked;
-
-            this._appStore.setState(state);
-        }
-    }, {
         key: 'setReviewError',
         value: function setReviewError(isErrored) {
             var state = this._appStore.getState();
@@ -740,8 +614,13 @@ var appActionsService = function () {
 
             this._appStore.setState(state);
 
-            this._validateAllFields();
+            this.validateAllFields();
         }
+
+        // -------------------------------------------------------------------------
+        // managing steps
+        // -------------------------------------------------------------------------
+
     }, {
         key: 'setCurrentStepId',
         value: function setCurrentStepId(stepId) {
@@ -753,7 +632,87 @@ var appActionsService = function () {
 
             state.currentStepId = stepId;
 
+            var areUnlocked = true;
+            state.steps.forEach(function (loopStepData, loopStepId) {
+                loopStepData.isUnlocked = areUnlocked;
+                if (loopStepId === state.currentStepId) {
+                    areUnlocked = false;
+                }
+            });
+
             this._appStore.setState(state);
+        }
+    }, {
+        key: 'lockAllSteps',
+        value: function lockAllSteps() {
+            var state = this._appStore.getState();
+            state.steps.forEach(function (step) {
+                step.isUnlocked = false;
+            });
+            this._appStore.setState(state);
+        }
+    }, {
+        key: 'tryGoNextStep',
+        value: function tryGoNextStep() {
+            var state = this._appStore.getState();
+
+            switch (state.currentStepId) {
+                case 'review':
+                    {
+                        var areAllRequiredFieldsValid = true;
+
+                        var _iteratorNormalCompletion2 = true;
+                        var _didIteratorError2 = false;
+                        var _iteratorError2 = undefined;
+
+                        try {
+                            for (var _iterator2 = Object.keys(state.fields)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                                var fieldName = _step2.value;
+
+                                if (state.fields[fieldName].isRequired && state.fields[fieldName].isValid !== true) {
+                                    areAllRequiredFieldsValid = false;
+                                    break;
+                                }
+                            }
+                        } catch (err) {
+                            _didIteratorError2 = true;
+                            _iteratorError2 = err;
+                        } finally {
+                            try {
+                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                                    _iterator2.return();
+                                }
+                            } finally {
+                                if (_didIteratorError2) {
+                                    throw _iteratorError2;
+                                }
+                            }
+                        }
+
+                        if (areAllRequiredFieldsValid) {
+                            this.setReviewError(false);
+                            this.setCurrentStepId('socials');
+                        } else {
+                            this.setReviewError(true);
+                        }
+                        break;
+                    }
+                case 'socials':
+                    {
+                        this.setCurrentStepId('summary');
+                        break;
+                    }
+                case 'summary':
+                    {
+                        this.setCurrentStepId('final');
+                        this.lockAllSteps();
+                        break;
+                    }
+                default:
+                    {
+                        this.setCurrentStepId('review');
+                    }
+            }
         }
     }]);
 
@@ -885,6 +844,48 @@ angular.module('stateModule').constant('initialAppState', {
 // -----------------------------------------------------------------------------
 
 angular.module('stepsModule', ['stateModule']);
+
+angular.module('stepsModule').run(['appActions', function (appActions) {
+    // will display first step
+    appActions.tryGoNextStep();
+}]);
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+// -----------------------------------------------------------------------------
+// nextStepButtonCtrl -- handles a button for going to next step.
+// -----------------------------------------------------------------------------
+
+var NextStepButtonController = function () {
+    _createClass(NextStepButtonController, null, [{
+        key: 'initClass',
+        value: function initClass() {
+            NextStepButtonController.$inject = ['appActions'];
+        }
+    }]);
+
+    function NextStepButtonController(appActions) {
+        _classCallCheck(this, NextStepButtonController);
+
+        this._appActions = appActions;
+    }
+
+    _createClass(NextStepButtonController, [{
+        key: 'tryGoNext',
+        value: function tryGoNext() {
+            this._appActions.tryGoNextStep();
+        }
+    }]);
+
+    return NextStepButtonController;
+}();
+
+NextStepButtonController.initClass();
+
+angular.module('stepsModule').controller('nextStepButtonCtrl', NextStepButtonController);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -985,43 +986,6 @@ angular.module('stepsModule').controller('stepsMenuCtrl', StepsMenuController);
 // -----------------------------------------------------------------------------
 
 angular.module('summaryModule', ['stateModule']);
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-// -----------------------------------------------------------------------------
-// publishButtonCtrl -- handles a button for going to final step.
-// -----------------------------------------------------------------------------
-
-var PublishButtonController = function () {
-    _createClass(PublishButtonController, null, [{
-        key: 'initClass',
-        value: function initClass() {
-            PublishButtonController.$inject = ['appActions'];
-        }
-    }]);
-
-    function PublishButtonController(appActions) {
-        _classCallCheck(this, PublishButtonController);
-
-        this._appActions = appActions;
-    }
-
-    _createClass(PublishButtonController, [{
-        key: 'publish',
-        value: function publish() {
-            this._appActions.setCurrentStepId('final');
-        }
-    }]);
-
-    return PublishButtonController;
-}();
-
-PublishButtonController.initClass();
-
-angular.module('summaryModule').controller('publishButtonCtrl', PublishButtonController);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();

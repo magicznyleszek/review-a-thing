@@ -21,6 +21,10 @@ class appActionsService {
         this._appStore.setState(state);
     }
 
+    // -------------------------------------------------------------------------
+    // managing fields
+    // -------------------------------------------------------------------------
+
     setField(fieldName, value) {
         const state = this._appStore.getState();
 
@@ -35,10 +39,10 @@ class appActionsService {
 
         this._appStore.setState(state);
 
-        this._validateField(fieldName);
+        this.validateField(fieldName);
     }
 
-    _validateField(fieldName) {
+    validateField(fieldName) {
         const state = this._appStore.getState();
         const field = state.fields[fieldName];
 
@@ -59,23 +63,11 @@ class appActionsService {
         this._appStore.setState(state);
     }
 
-    _validateAllFields() {
+    validateAllFields() {
         const state = this._appStore.getState();
         for (const fieldName of Object.keys(state.fields)) {
-            this._validateField(fieldName);
+            this.validateField(fieldName);
         }
-    }
-
-    setSocial(socialName, isChecked) {
-        const state = this._appStore.getState();
-
-        if (typeof state.socials[socialName] === 'undefined') {
-            throw new Error(`Unknown social: "${socialName}"!`);
-        }
-
-        state.socials[socialName] = isChecked;
-
-        this._appStore.setState(state);
     }
 
     setReviewError(isErrored) {
@@ -84,8 +76,12 @@ class appActionsService {
 
         this._appStore.setState(state);
 
-        this._validateAllFields();
+        this.validateAllFields();
     }
+
+    // -------------------------------------------------------------------------
+    // managing steps
+    // -------------------------------------------------------------------------
 
     setCurrentStepId(stepId) {
         const state = this._appStore.getState();
@@ -96,7 +92,63 @@ class appActionsService {
 
         state.currentStepId = stepId;
 
+        let areUnlocked = true;
+        state.steps.forEach((loopStepData, loopStepId) => {
+            loopStepData.isUnlocked = areUnlocked;
+            if (loopStepId === state.currentStepId) {
+                areUnlocked = false;
+            }
+        });
+
         this._appStore.setState(state);
+    }
+
+    lockAllSteps() {
+        const state = this._appStore.getState();
+        state.steps.forEach((step) => {
+            step.isUnlocked = false;
+        });
+        this._appStore.setState(state);
+    }
+
+    tryGoNextStep() {
+        const state = this._appStore.getState();
+
+        switch (state.currentStepId) {
+            case 'review': {
+                let areAllRequiredFieldsValid = true;
+
+                for (const fieldName of Object.keys(state.fields)) {
+                    if (
+                        state.fields[fieldName].isRequired &&
+                        state.fields[fieldName].isValid !== true
+                    ) {
+                        areAllRequiredFieldsValid = false;
+                        break;
+                    }
+                }
+
+                if (areAllRequiredFieldsValid) {
+                    this.setReviewError(false);
+                    this.setCurrentStepId('socials');
+                } else {
+                    this.setReviewError(true);
+                }
+                break;
+            }
+            case 'socials': {
+                this.setCurrentStepId('summary');
+                break;
+            }
+            case 'summary': {
+                this.setCurrentStepId('final');
+                this.lockAllSteps();
+                break;
+            }
+            default: {
+                this.setCurrentStepId('review');
+            }
+        }
     }
 }
 

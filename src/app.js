@@ -3,9 +3,9 @@
 // -----------------------------------------------------------------------------
 
 angular.module('productReviewAppModule', [
+    'fieldsModule',
     'titleModule',
     'stepsModule',
     'reviewFormModule',
-    'socialFormModule',
     'summaryModule'
 ]);
