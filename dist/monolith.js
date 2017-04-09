@@ -321,7 +321,7 @@ var ReviewFormErrorController = function () {
     _createClass(ReviewFormErrorController, null, [{
         key: 'initClass',
         value: function initClass() {
-            ReviewFormErrorController.stepId = 'form';
+            ReviewFormErrorController.stepId = 'review';
             ReviewFormErrorController.$inject = ['appStore'];
         }
     }]);
@@ -338,7 +338,7 @@ var ReviewFormErrorController = function () {
     _createClass(ReviewFormErrorController, [{
         key: '_onStateChange',
         value: function _onStateChange(state) {
-            this.isVisible = state.steps.get('form').isErrorVisible;
+            this.isVisible = state.steps.get('review').isErrorVisible;
         }
     }]);
 
@@ -468,7 +468,7 @@ var appActionsService = function () {
         key: 'setFormError',
         value: function setFormError(isErrored) {
             var state = this._appStore.getState();
-            state.steps.get('form').isErrorVisible = isErrored;
+            state.steps.get('review').isErrorVisible = isErrored;
 
             this._appStore.setState(state);
         }
@@ -549,7 +549,7 @@ angular.module('stateModule').service('appStore', appStoreService);
 angular.module('stateModule').constant('initialAppState', {
     productTitle: null,
     currentStepId: null,
-    steps: new Map([['form', {
+    steps: new Map([['review', {
         name: 'Step 1',
         isVisibleInMenu: true,
         isUnlocked: false,

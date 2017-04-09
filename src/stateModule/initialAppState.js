@@ -2,7 +2,7 @@ angular.module('stateModule').constant('initialAppState', {
     productTitle: null,
     currentStepId: null,
     steps: new Map([
-        ['form', {
+        ['review', {
             name: 'Step 1',
             isVisibleInMenu: true,
             isUnlocked: false,

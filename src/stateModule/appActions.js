@@ -57,7 +57,7 @@ class appActionsService {
 
     setFormError(isErrored) {
         const state = this._appStore.getState();
-        state.steps.get('form').isErrorVisible = isErrored;
+        state.steps.get('review').isErrorVisible = isErrored;
 
         this._appStore.setState(state);
     }

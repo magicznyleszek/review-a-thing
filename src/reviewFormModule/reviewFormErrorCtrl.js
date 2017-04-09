@@ -4,7 +4,7 @@
 
 class ReviewFormErrorController {
     static initClass() {
-        ReviewFormErrorController.stepId = 'form';
+        ReviewFormErrorController.stepId = 'review';
         ReviewFormErrorController.$inject = ['appStore'];
     }
 
@@ -16,7 +16,7 @@ class ReviewFormErrorController {
     }
 
     _onStateChange(state) {
-        this.isVisible = state.steps.get('form').isErrorVisible;
+        this.isVisible = state.steps.get('review').isErrorVisible;
     }
 }
 
