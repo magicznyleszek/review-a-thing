@@ -21,8 +21,11 @@ class ReviewFormNextButtonController {
         let areAllRequiredFieldsValid = true;
 
         for (const fieldName of Object.keys(state.fields)) {
-            if (state.fields[fieldName].isValid !== true) {
-                areAllRequiredFieldsValid = false
+            if (
+                state.fields[fieldName].isRequired &&
+                state.fields[fieldName].isValid !== true
+            ) {
+                areAllRequiredFieldsValid = false;
                 break;
             }
         }

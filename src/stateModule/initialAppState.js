@@ -34,7 +34,7 @@ angular.module('stateModule').constant('initialAppState', {
         title: {
             value: null,
             isRequired: false,
-            isValid: null
+            isValid: true
         },
         reviewText: {
             value: null,

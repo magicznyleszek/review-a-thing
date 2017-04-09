@@ -388,7 +388,7 @@ var ReviewFormNextButtonController = function () {
                 for (var _iterator = Object.keys(state.fields)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var fieldName = _step.value;
 
-                    if (state.fields[fieldName].isValid !== true) {
+                    if (state.fields[fieldName].isRequired && state.fields[fieldName].isValid !== true) {
                         areAllRequiredFieldsValid = false;
                         break;
                     }
@@ -661,7 +661,7 @@ angular.module('stateModule').constant('initialAppState', {
         title: {
             value: null,
             isRequired: false,
-            isValid: null
+            isValid: true
         },
         reviewText: {
             value: null,
