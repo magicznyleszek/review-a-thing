@@ -48,10 +48,6 @@ class appActionsService {
         const state = this._appStore.getState();
         const field = state.fields[fieldName];
 
-        if (typeof field === 'undefined') {
-            throw new Error(`Unknown field: "${fieldName}"!`);
-        }
-
         if (field.isRequired) {
             if (field.validityType === 'text') {
                 field.isValid = this._validator.isNonEmptyString(field.value);
