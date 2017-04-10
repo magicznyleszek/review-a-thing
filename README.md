@@ -1,4 +1,4 @@
-![coverage-shield-badge-1](https://img.shields.io/badge/coverage-80.83%25-yellow.svg)
+![coverage-shield-badge-1](https://img.shields.io/badge/coverage-87.59%25-yellow.svg)
 
 # Review a Thing (tm)
 

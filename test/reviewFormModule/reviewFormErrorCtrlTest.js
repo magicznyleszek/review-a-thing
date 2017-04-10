@@ -12,12 +12,12 @@ describe('reviewFormErrorCtrl', () => {
     });
 
     it('should be visible if state property is true', () => {
-        appActions.setReviewError(true);
+        appActions._setReviewError(true);
         expect(reviewFormErrorCtrl.isVisible).toBeTruthy();
     });
 
     it('should be hidden if state property is false', () => {
-        appActions.setReviewError(false);
+        appActions._setReviewError(false);
         expect(reviewFormErrorCtrl.isVisible).toBeFalsy();
     });
 });

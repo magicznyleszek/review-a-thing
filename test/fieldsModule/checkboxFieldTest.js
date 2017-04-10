@@ -45,6 +45,6 @@ describe('checkboxField', () => {
         compCtrl.value = true;
         compCtrl.onChange();
         const state = appStore.getState();
-        expect(state.fields.title.value).toBe(true);
+        expect(state.fields.facebook.value).toBe(true);
     });
 });
