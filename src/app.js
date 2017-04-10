@@ -9,3 +9,8 @@ angular.module('productReviewAppModule', [
     'reviewFormModule',
     'summaryModule'
 ]);
+
+angular.module('productReviewAppModule').run(['appActions', (appActions) => {
+    // will display first step on app init
+    appActions.tryGoNextStep();
+}]);

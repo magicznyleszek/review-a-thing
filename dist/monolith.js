@@ -6,6 +6,11 @@
 // -----------------------------------------------------------------------------
 
 angular.module('productReviewAppModule', ['fieldsModule', 'titleModule', 'stepsModule', 'reviewFormModule', 'summaryModule']);
+
+angular.module('productReviewAppModule').run(['appActions', function (appActions) {
+    // will display first step on app init
+    appActions.tryGoNextStep();
+}]);
 'use strict';
 
 // -----------------------------------------------------------------------------
@@ -26,7 +31,7 @@ angular.module('productReviewAppModule').config(['$interpolateProvider', '$compi
 'use strict';
 
 // -----------------------------------------------------------------------------
-// fieldsModule is for self-validating form fields components.
+// fieldsModule is a collection of self-validating form fields components.
 // -----------------------------------------------------------------------------
 
 angular.module('fieldsModule', ['stateModule', 'validatorModule']);
@@ -504,8 +509,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// appActions is a service that has all methods for updating appStore
-// state partials.
+// appActions is a service that has all methods for updating appStore state.
 // -----------------------------------------------------------------------------
 
 var appActionsService = function () {
@@ -790,6 +794,10 @@ appStoreService.initClass();
 angular.module('stateModule').service('appStore', appStoreService);
 'use strict';
 
+// -----------------------------------------------------------------------------
+// initialAppState is an appStore state initial configuration.
+// -----------------------------------------------------------------------------
+
 angular.module('stateModule').constant('initialAppState', {
     productTitle: null,
     currentStepId: null,
@@ -860,11 +868,6 @@ angular.module('stateModule').constant('initialAppState', {
 // -----------------------------------------------------------------------------
 
 angular.module('stepsModule', ['stateModule']);
-
-angular.module('stepsModule').run(['appActions', function (appActions) {
-    // will display first step
-    appActions.tryGoNextStep();
-}]);
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -949,7 +952,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// stepsMenuCtrl -- handles displaying tabs and changing current tab.
+// stepsMenuCtrl -- handles displaying steps tabs.
 // -----------------------------------------------------------------------------
 
 var StepsMenuController = function () {
@@ -1009,7 +1012,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 // -----------------------------------------------------------------------------
-// summaryCtrl -- handles displaying steps content.
+// summaryCtrl -- handles displaying summary content.
 // -----------------------------------------------------------------------------
 
 var SummaryController = function () {

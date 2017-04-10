@@ -1,6 +1,5 @@
 // -----------------------------------------------------------------------------
-// appActions is a service that has all methods for updating appStore
-// state partials.
+// appActions is a service that has all methods for updating appStore state.
 // -----------------------------------------------------------------------------
 
 class appActionsService {

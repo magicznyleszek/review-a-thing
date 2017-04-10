@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// summaryCtrl -- handles displaying steps content.
+// summaryCtrl -- handles displaying summary content.
 // -----------------------------------------------------------------------------
 
 class SummaryController {

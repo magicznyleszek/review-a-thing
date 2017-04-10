@@ -1,5 +1,5 @@
 // -----------------------------------------------------------------------------
-// stepsMenuCtrl -- handles displaying tabs and changing current tab.
+// stepsMenuCtrl -- handles displaying steps tabs.
 // -----------------------------------------------------------------------------
 
 class StepsMenuController {

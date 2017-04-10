@@ -1,3 +1,7 @@
+// -----------------------------------------------------------------------------
+// initialAppState is an appStore state initial configuration.
+// -----------------------------------------------------------------------------
+
 angular.module('stateModule').constant('initialAppState', {
     productTitle: null,
     currentStepId: null,
