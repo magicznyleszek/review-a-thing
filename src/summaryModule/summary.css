@@ -1,0 +1,50 @@
+/*******************************************************************************
+summary module
+*******************************************************************************/
+
+[i-summary-row] {
+    padding: calc(var(--s-leading) * 0.5) 0;
+}
+
+[i-summary-previewContent] {
+    padding: calc(var(--s-leading) * 0.5);
+    background-color: color(var(--c-iceberg) tint(50%));
+}
+
+[i-summary-label] {
+    font-weight: 300;
+}
+
+[i-summary-reviewTitle] {
+    font-size: 200%;
+}
+
+/*******************************************************************************
+summary list
+*******************************************************************************/
+
+[i-summary-list] {
+    display: inline-block;
+    list-style: none;
+}
+
+[i-summary-listItem] {
+    display: inline;
+}
+
+[i-summary-listItem]::after {
+    content: ", ";
+}
+
+[i-summary-listItem]:last-child::after {
+    display: none;
+}
+
+[i-summary-listItem]:nth-last-child(2)::after {
+    content: " & ";
+}
+
+/* oxford comma */
+[i-summary-listItem]:nth-last-child(3) + [i-summary-listItem]::after {
+    content: ", & ";
+}

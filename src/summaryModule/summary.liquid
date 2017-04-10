@@ -1,18 +1,52 @@
-<div i-card ng-controller="summaryCtrl as summary">
-    <h1>Preview Review</h1>
+<div i-card i-summary ng-controller="summaryCtrl as summary">
+    <h1 i-cardTitle>Preview Review</h1>
 
-    <div ng-bind="summary.state.fields.stars.value"></div>
+    <section i-summary-previewContent>
+        <div i-summary-row>
+            <span i-summary-label>From:</span>
+            <span ng-bind="summary.state.fields.yourName.value"></span>
+        </div>
 
-    Reviewer:
-    <div ng-bind="summary.state.fields.yourName.value"></div>
-    <div
-        ng-show="summary.state.fields.title.value"
-        ng-bind="summary.state.fields.title.value"
-    ></div>
-    <div ng-bind="summary.state.fields.reviewText.value"></div>
+        <div
+            i-summary-row
+            ng-bind="summary.starsLabel"
+        ></div>
 
-    Share on:
-    <div ng-show="summary.state.fields.facebook.value">Facebook</div>
-    <div ng-show="summary.state.fields.twitter.value">Twitter</div>
-    <div ng-show="summary.state.fields.linkedIn.value">LinkedIn</div>
+        <h2
+            i-summary-row
+            i-summary-reviewTitle
+            ng-show="summary.state.fields.title.value"
+            ng-bind="summary.state.fields.title.value"
+        ></h2>
+
+        <p
+            i-summary-row
+            ng-bind="summary.state.fields.reviewText.value"
+        ></p>
+    </section>
+
+    <div i-summary-row>
+        <span i-summary-label>Share on:</span>
+
+        <ul i-summary-list ng-show="summary.hasAnySocialsToShareOn">
+            <li
+                i-summary-listItem
+                ng-if="summary.state.fields.facebook.value"
+            >Facebook</li>
+
+            <li
+                i-summary-listItem
+                ng-if="summary.state.fields.twitter.value"
+            >Twitter</li>
+
+            <li
+                i-summary-listItem
+                ng-if="summary.state.fields.linkedIn.value"
+            >LinkedIn</li>
+        </ul>
+
+        <span ng-show="!summary.hasAnySocialsToShareOn">
+            nowhere :-(
+        </span>
+    </div>
 </div>

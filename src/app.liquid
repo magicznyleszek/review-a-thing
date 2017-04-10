@@ -15,11 +15,7 @@
         </section>
 
         <section ng-show="stepsContent.currentStepId === 'socials'">
-            <div i-card>
-                <checkbox-field label="Facebook" name="facebook"></checkbox-field>
-                <checkbox-field label="Twitter" name="twitter"></checkbox-field>
-                <checkbox-field label="LinkedIn" name="linkedIn"></checkbox-field>
-            </div>
+            {% include socialsFormModule/socialsForm.liquid %}
 
             {% include stepsModule/nextStepButton.liquid label="Next" %}
         </section>
