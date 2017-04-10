@@ -7,13 +7,54 @@ checkboxField module
     padding: calc(var(--s-leading) * 0.5) 0;
 }
 
+/*******************************************************************************
+states
+*******************************************************************************/
+
 [i-checkboxField-input]:checked::after {
-    content: "\2713";
+    opacity: 1;
+}
+
+[i-checkboxField-input]:hover {
+    color: var(--c-jade);
+}
+
+[i-checkboxField-input]:active {
+    color: var(--c-deepSkyBlue);
+}
+
+/*******************************************************************************
+partials
+*******************************************************************************/
+
+[i-checkboxField-label] {
+    display: inline-block;
+    margin-left: calc(var(--s-leading) * 0.25);
+    cursor: pointer;
 }
 
 [i-checkboxField-input] {
     display: inline-block;
+    vertical-align: top;
+    position: relative;
     border-radius: var(--s-global-br);
-    padding: calc(var(--s-leading) * 0.5);
+    width: var(--s-leading);
+    height: var(--s-leading);
+    outline: 0;
+    cursor: pointer;
     background-color: color(var(--c-watercourse) alpha(10%));
+    color: currentColor;
+    appearance: none;
+}
+
+[i-checkboxField-input]::after {
+    content: "\2713";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    background-color: transparent;
+    line-height: var(--s-leading);
+    text-align: center;
 }
