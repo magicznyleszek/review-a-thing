@@ -24,6 +24,7 @@ angular.module('stateModule').constant('initialAppState', {
             isUnlocked: false
         }]
     ]),
+    areAllRequiredFieldsValid: null,
     fields: {
         yourName: {
             value: null,

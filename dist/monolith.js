@@ -548,16 +548,19 @@ var appActionsService = function () {
 
             state.fields[fieldName].value = value;
 
-            // set areFieldsValid by checking all fields
-            // check unlock step two
-
             this._appStore.setState(state);
 
-            this.validateField(fieldName);
+            // post setting state
+
+            this._validateField(fieldName);
+
+            this._checkAllRequiredFieldsValidity();
+
+            this._checkReviewValidityWithFurtherStepsUnlocked();
         }
     }, {
-        key: 'validateField',
-        value: function validateField(fieldName) {
+        key: '_validateField',
+        value: function _validateField(fieldName) {
             var state = this._appStore.getState();
             var field = state.fields[fieldName];
 
@@ -578,8 +581,8 @@ var appActionsService = function () {
             this._appStore.setState(state);
         }
     }, {
-        key: 'validateAllFields',
-        value: function validateAllFields() {
+        key: '_validateAllFields',
+        value: function _validateAllFields() {
             var state = this._appStore.getState();
             var _iteratorNormalCompletion = true;
             var _didIteratorError = false;
@@ -589,7 +592,7 @@ var appActionsService = function () {
                 for (var _iterator = Object.keys(state.fields)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
                     var fieldName = _step.value;
 
-                    this.validateField(fieldName);
+                    this._validateField(fieldName);
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -607,14 +610,61 @@ var appActionsService = function () {
             }
         }
     }, {
-        key: 'setReviewError',
-        value: function setReviewError(isErrored) {
+        key: '_checkAllRequiredFieldsValidity',
+        value: function _checkAllRequiredFieldsValidity() {
+            var state = this._appStore.getState();
+
+            state.areAllRequiredFieldsValid = true;
+            var _iteratorNormalCompletion2 = true;
+            var _didIteratorError2 = false;
+            var _iteratorError2 = undefined;
+
+            try {
+                for (var _iterator2 = Object.keys(state.fields)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+                    var fieldName = _step2.value;
+
+                    if (state.fields[fieldName].isRequired && state.fields[fieldName].isValid !== true) {
+                        state.areAllRequiredFieldsValid = false;
+                        break;
+                    }
+                }
+            } catch (err) {
+                _didIteratorError2 = true;
+                _iteratorError2 = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                        _iterator2.return();
+                    }
+                } finally {
+                    if (_didIteratorError2) {
+                        throw _iteratorError2;
+                    }
+                }
+            }
+
+            this._appStore.setState(state);
+        }
+    }, {
+        key: '_checkReviewValidityWithFurtherStepsUnlocked',
+        value: function _checkReviewValidityWithFurtherStepsUnlocked() {
+            var state = this._appStore.getState();
+
+            if (state.steps.get('socials').isUnlocked && state.areAllRequiredFieldsValid !== true) {
+                this._setReviewError(true);
+                this._lockAllSteps();
+                this.setCurrentStepId('review');
+            }
+        }
+    }, {
+        key: '_setReviewError',
+        value: function _setReviewError(isErrored) {
             var state = this._appStore.getState();
             state.steps.get('review').isErrorVisible = isErrored;
 
             this._appStore.setState(state);
 
-            this.validateAllFields();
+            this._validateAllFields();
         }
 
         // -------------------------------------------------------------------------
@@ -631,20 +681,13 @@ var appActionsService = function () {
             }
 
             state.currentStepId = stepId;
-
-            var areUnlocked = true;
-            state.steps.forEach(function (loopStepData, loopStepId) {
-                loopStepData.isUnlocked = areUnlocked;
-                if (loopStepId === state.currentStepId) {
-                    areUnlocked = false;
-                }
-            });
+            state.steps.get(stepId).isUnlocked = true;
 
             this._appStore.setState(state);
         }
     }, {
-        key: 'lockAllSteps',
-        value: function lockAllSteps() {
+        key: '_lockAllSteps',
+        value: function _lockAllSteps() {
             var state = this._appStore.getState();
             state.steps.forEach(function (step) {
                 step.isUnlocked = false;
@@ -659,41 +702,13 @@ var appActionsService = function () {
             switch (state.currentStepId) {
                 case 'review':
                     {
-                        var areAllRequiredFieldsValid = true;
-
-                        var _iteratorNormalCompletion2 = true;
-                        var _didIteratorError2 = false;
-                        var _iteratorError2 = undefined;
-
-                        try {
-                            for (var _iterator2 = Object.keys(state.fields)[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-                                var fieldName = _step2.value;
-
-                                if (state.fields[fieldName].isRequired && state.fields[fieldName].isValid !== true) {
-                                    areAllRequiredFieldsValid = false;
-                                    break;
-                                }
-                            }
-                        } catch (err) {
-                            _didIteratorError2 = true;
-                            _iteratorError2 = err;
-                        } finally {
-                            try {
-                                if (!_iteratorNormalCompletion2 && _iterator2.return) {
-                                    _iterator2.return();
-                                }
-                            } finally {
-                                if (_didIteratorError2) {
-                                    throw _iteratorError2;
-                                }
-                            }
-                        }
-
-                        if (areAllRequiredFieldsValid) {
-                            this.setReviewError(false);
+                        if (state.areAllRequiredFieldsValid) {
+                            this._setReviewError(false);
                             this.setCurrentStepId('socials');
                         } else {
-                            this.setReviewError(true);
+                            this._setReviewError(true);
+                            this._lockAllSteps();
+                            this.setCurrentStepId('review');
                         }
                         break;
                     }
@@ -705,7 +720,7 @@ var appActionsService = function () {
                 case 'summary':
                     {
                         this.setCurrentStepId('final');
-                        this.lockAllSteps();
+                        this._lockAllSteps();
                         break;
                     }
                 default:
@@ -796,6 +811,7 @@ angular.module('stateModule').constant('initialAppState', {
         isVisibleInMenu: false,
         isUnlocked: false
     }]]),
+    areAllRequiredFieldsValid: null,
     fields: {
         yourName: {
             value: null,

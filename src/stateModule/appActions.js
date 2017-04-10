@@ -32,17 +32,20 @@ class appActionsService {
             throw new Error(`Unknown field: "${fieldName}"!`);
         }
 
-        state.fields[fieldName].value = value
-
-        // set areFieldsValid by checking all fields
-        // check unlock step two
+        state.fields[fieldName].value = value;
 
         this._appStore.setState(state);
 
-        this.validateField(fieldName);
+        // post setting state
+
+        this._validateField(fieldName);
+
+        this._checkAllRequiredFieldsValidity();
+
+        this._checkReviewValidityWithFurtherStepsUnlocked();
     }
 
-    validateField(fieldName) {
+    _validateField(fieldName) {
         const state = this._appStore.getState();
         const field = state.fields[fieldName];
 
@@ -63,20 +66,50 @@ class appActionsService {
         this._appStore.setState(state);
     }
 
-    validateAllFields() {
+    _validateAllFields() {
         const state = this._appStore.getState();
         for (const fieldName of Object.keys(state.fields)) {
-            this.validateField(fieldName);
+            this._validateField(fieldName);
         }
     }
 
-    setReviewError(isErrored) {
+    _checkAllRequiredFieldsValidity() {
+        const state = this._appStore.getState();
+
+        state.areAllRequiredFieldsValid = true;
+        for (const fieldName of Object.keys(state.fields)) {
+            if (
+                state.fields[fieldName].isRequired &&
+                state.fields[fieldName].isValid !== true
+            ) {
+                state.areAllRequiredFieldsValid = false;
+                break;
+            }
+        }
+
+        this._appStore.setState(state);
+    }
+
+    _checkReviewValidityWithFurtherStepsUnlocked() {
+        const state = this._appStore.getState();
+
+        if (
+            state.steps.get('socials').isUnlocked &&
+            state.areAllRequiredFieldsValid !== true
+        ) {
+            this._setReviewError(true);
+            this._lockAllSteps();
+            this.setCurrentStepId('review');
+        }
+    }
+
+    _setReviewError(isErrored) {
         const state = this._appStore.getState();
         state.steps.get('review').isErrorVisible = isErrored;
 
         this._appStore.setState(state);
 
-        this.validateAllFields();
+        this._validateAllFields();
     }
 
     // -------------------------------------------------------------------------
@@ -91,19 +124,12 @@ class appActionsService {
         }
 
         state.currentStepId = stepId;
-
-        let areUnlocked = true;
-        state.steps.forEach((loopStepData, loopStepId) => {
-            loopStepData.isUnlocked = areUnlocked;
-            if (loopStepId === state.currentStepId) {
-                areUnlocked = false;
-            }
-        });
+        state.steps.get(stepId).isUnlocked = true;
 
         this._appStore.setState(state);
     }
 
-    lockAllSteps() {
+    _lockAllSteps() {
         const state = this._appStore.getState();
         state.steps.forEach((step) => {
             step.isUnlocked = false;
@@ -116,23 +142,13 @@ class appActionsService {
 
         switch (state.currentStepId) {
             case 'review': {
-                let areAllRequiredFieldsValid = true;
-
-                for (const fieldName of Object.keys(state.fields)) {
-                    if (
-                        state.fields[fieldName].isRequired &&
-                        state.fields[fieldName].isValid !== true
-                    ) {
-                        areAllRequiredFieldsValid = false;
-                        break;
-                    }
-                }
-
-                if (areAllRequiredFieldsValid) {
-                    this.setReviewError(false);
+                if (state.areAllRequiredFieldsValid) {
+                    this._setReviewError(false);
                     this.setCurrentStepId('socials');
                 } else {
-                    this.setReviewError(true);
+                    this._setReviewError(true);
+                    this._lockAllSteps();
+                    this.setCurrentStepId('review');
                 }
                 break;
             }
@@ -142,7 +158,7 @@ class appActionsService {
             }
             case 'summary': {
                 this.setCurrentStepId('final');
-                this.lockAllSteps();
+                this._lockAllSteps();
                 break;
             }
             default: {
