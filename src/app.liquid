@@ -7,7 +7,7 @@
 
     {% include stepsModule/stepsMenu.liquid %}
 
-    <div ng-controller="stepsContentCtrl as stepsContent">
+    <div ng-controller="stepsContentCtrl as stepsContent" ng-cloak>
         <section ng-show="stepsContent.currentStepId === 'review'">
             {% include reviewFormModule/reviewForm.liquid %}
 
