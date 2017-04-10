@@ -3,12 +3,12 @@
         i-stepsMenu-item
         ng-repeat="step in stepsMenu.options track by step.id"
         ng-show="step.isVisibleInMenu"
+        ng-disabled="!step.isUnlocked"
     >
         <button
             i-stepsMenu-button
             ng-click="step.show()"
             ng-bind="::step.name"
-            ng-disabled="!step.isUnlocked"
         ></button>
     </div>
 </menu>

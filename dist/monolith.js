@@ -105,7 +105,7 @@ var StarsFieldController = function () {
         key: 'initClass',
         value: function initClass() {
             StarsFieldController.getTemplate = function () {
-                return '\n                <label i-starsField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?\'required\':\'\']]">\n                    <span\n                        i-starsField-label\n                        ng-if="::$ctrl.label"\n                        ng-bind="::$ctrl.label"\n                    ></span>\n\n                    <button\n                        ng-repeat="number in [1, 2, 3, 4, 5]"\n                        i-starsField-star\n                        ng-click="$ctrl.setValue(number)"\n                        ng-bind="$ctrl.getStarText(number)"\n                    ></button>\n                </label>\n            ';
+                return '\n                <div i-starsField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?\'required\':\'\']]">\n                    <span\n                        i-starsField-label\n                        ng-if="::$ctrl.label"\n                        ng-bind="::$ctrl.label"\n                    ></span>\n\n                    <button\n                        ng-repeat="number in [1, 2, 3, 4, 5]"\n                        i-starsField-star\n                        ng-click="$ctrl.setValue(number)"\n                        ng-bind="$ctrl.getStarText(number)"\n                    ></button>\n                </div>\n            ';
             };
 
             StarsFieldController.$inject = ['$attrs', 'appStore', 'appActions'];

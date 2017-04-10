@@ -9,7 +9,7 @@ class StarsFieldController {
     static initClass() {
         StarsFieldController.getTemplate = () => {
             return `
-                <label i-starsField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?'required':'']]">
+                <div i-starsField="[[$ctrl.getValidModifier()]] [[::$ctrl.isRequired?'required':'']]">
                     <span
                         i-starsField-label
                         ng-if="::$ctrl.label"
@@ -22,7 +22,7 @@ class StarsFieldController {
                         ng-click="$ctrl.setValue(number)"
                         ng-bind="$ctrl.getStarText(number)"
                     ></button>
-                </label>
+                </div>
             `;
         };
 
